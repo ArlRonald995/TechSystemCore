@@ -154,4 +154,31 @@ public class GestorProductos {
                 return null;
         }
     }
+    // MÉTODO PARA QUE EL ADMIN INGRESE NUEVO STOCK
+    public boolean agregarProductoNuevo(Producto p) {
+        // Nota: Guardamos los datos base. En un sistema real, deberíamos guardar
+        // los atributos específicos (RAM, OS) en otras columnas o tablas.
+
+        String sql = "INSERT INTO productostienda_raw (tipo, sku, nombre, marca, precio, stock, descripcion, imagen_ruta) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection con = Conexion.conectar();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, p.getClase()); // Ej: "Laptop", "Celular"
+            ps.setString(2, p.getSku());
+            ps.setString(3, p.getNombre());
+            ps.setString(4, p.getMarca());
+            ps.setDouble(5, p.getPrecio());
+            ps.setInt(6, p.getStock());
+            ps.setString(7, p.getDescripcion());
+            ps.setString(8, p.getRutaImagen()); // Si no hay imagen, guarda null o string vacío
+
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            System.err.println("Error al insertar producto: " + e.getMessage());
+            return false;
+        }
+    }
 }

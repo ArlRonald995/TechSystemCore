@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="Interfaz.TarjetaProducto">
+  <grid id="27dc6" binding="panelTarjeta" custom-create="true" layout-manager="GridLayoutManager" row-count="4" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+    <margin top="10" left="10" bottom="10" right="10"/>
+    <constraints>
+      <xy x="20" y="20" width="385" height="400"/>
+    </constraints>
+    <properties>
+      <preferredSize width="200" height="300"/>
+    </properties>
+    <border type="none">
+      <title-color color="-5524801"/>
+      <color color="-3158326"/>
+    </border>
+    <children>
+      <component id="48c31" class="javax.swing.JLabel" binding="txtNombre">
+        <constraints>
+          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <font name="Segoe UI" size="15" style="1"/>
+          <text value="Nombre"/>
+        </properties>
+      </component>
+      <component id="d01a3" class="javax.swing.JLabel" binding="txtPrecio">
+        <constraints>
+          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <font name="Segoe UI" size="15" style="1"/>
+          <text value="Precio"/>
+        </properties>
+      </component>
+      <component id="8dd3d" class="javax.swing.JButton" binding="verDetallesButton" default-binding="true">
+        <constraints>
+          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <font name="Segoe UI" size="15" style="1"/>
+          <text value="Ver detalles"/>
+        </properties>
+      </component>
+      <component id="42e07" class="javax.swing.JLabel" binding="iconCelular">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <focusCycleRoot value="false"/>
+          <text value=""/>
+        </properties>
+      </component>
+    </children>
+  </grid>
+</form>

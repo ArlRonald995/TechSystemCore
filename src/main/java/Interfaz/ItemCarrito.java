@@ -11,7 +11,12 @@ public class ItemCarrito extends JFrame{
         comprarButton.addActionListener(e ->{
             ProcesoDePago pago = new ProcesoDePago();
             pago.setVisible(true);
-            this.dispose();
+            Window ventanaPadre = SwingUtilities.getWindowAncestor(itemPanel);
+
+            // Si la encontramos, la cerramos
+            if (ventanaPadre != null) {
+                ventanaPadre.dispose();
+            }
         });
 
 

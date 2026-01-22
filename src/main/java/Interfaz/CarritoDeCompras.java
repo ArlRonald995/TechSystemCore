@@ -57,6 +57,7 @@ public class CarritoDeCompras extends JFrame{
         panelCarrito.add(scroll, BorderLayout.CENTER);
     }
 
+
     public static void main(String[] args) {
         //Asegura que la ventana se dibuje en el hilo correcto de memoria para evitar errores
         SwingUtilities.invokeLater(() -> {
@@ -64,5 +65,4 @@ public class CarritoDeCompras extends JFrame{
             frame.setVisible(true);
         });
     }
-
 }

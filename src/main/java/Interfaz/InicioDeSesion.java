@@ -28,7 +28,12 @@ public class InicioDeSesion extends JFrame {
         });
 
         accederButton.addActionListener(e -> {
-            ingresoCatalogo();
+            if (entradaUsuario.getText().equals("admin") && entradaContraseña.getText().equals("Pancito123")){
+                ingresoVentanaAdmin();
+            }else{
+                ingresoCatalogo();
+            }
+
         });
 
     }
@@ -51,6 +56,12 @@ public class InicioDeSesion extends JFrame {
     private void ingresoCatalogo() {
         VentanaCatalogo v1 = new VentanaCatalogo();
         v1.setVisible(true);
+        this.dispose();
+    }
+
+    private void ingresoVentanaAdmin() {
+        VentanaAdmin va = new VentanaAdmin();
+        va.setVisible(true);
         this.dispose();
     }
 

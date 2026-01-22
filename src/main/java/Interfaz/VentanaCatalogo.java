@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 // La clase extiende JFrame Ventana1 ES la ventana.
-public class Ventana1 extends JFrame {
+public class VentanaCatalogo extends JFrame {
 
     // Componentes del .form
     private JPanel panelVentana1;
@@ -19,7 +19,7 @@ public class Ventana1 extends JFrame {
     private JButton carritoDeComprasButton;
     private JButton cerrarSesionButton;
 
-    public Ventana1() {
+    public VentanaCatalogo() {
         super("Tech System Core");
         //Interfaz.Configuraciones de la ventana
         configurarVentana();
@@ -28,11 +28,15 @@ public class Ventana1 extends JFrame {
 //Aca se arregla la estructura del panel, se coloca el header arriba, se agrega es scroll y se dividen en cuadritos para poner las tarjetas
         armarEstucturaPanel();
         //Aca se van llenando los datos en las tarjetas
-        VisualizacionProductos.cargarProductos(panelContent);
+        //VisualizacionProductos.cargarProductos(panelContent);
 
         cerrarSesionButton.addActionListener(e -> {
 
             volverLogin();
+        });
+
+        carritoDeComprasButton.addActionListener(e -> {
+            abrirCarrito();
         });
 
         // Refrescar
@@ -75,6 +79,12 @@ public class Ventana1 extends JFrame {
         this.dispose();
     }
 
+    private void abrirCarrito(){
+        CarritoDeCompras carritoDeCompras = new CarritoDeCompras();
+        carritoDeCompras.setVisible(true);
+        this.dispose();
+    }
+
     private void estilosBotones() {
         // Interfaz.Estilos
         Estilos.botonesBonitos(button1);
@@ -91,7 +101,7 @@ public class Ventana1 extends JFrame {
 
         //Asegura que la ventana se dibuje en el hilo correcto de memoria para evitar errores
         SwingUtilities.invokeLater(() -> {
-            Ventana1 frame = new Ventana1();
+            VentanaCatalogo frame = new VentanaCatalogo();
             frame.setVisible(true);
         });
     }

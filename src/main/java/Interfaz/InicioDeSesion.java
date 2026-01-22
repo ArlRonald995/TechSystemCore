@@ -49,7 +49,7 @@ public class InicioDeSesion extends JFrame {
     }
 
     private void ingresoCatalogo() {
-        Ventana1 v1 = new Ventana1();
+        VentanaCatalogo v1 = new VentanaCatalogo();
         v1.setVisible(true);
         this.dispose();
     }

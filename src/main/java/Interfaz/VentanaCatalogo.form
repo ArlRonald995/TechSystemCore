@@ -80,6 +80,16 @@
               <text value="Tech System Core"/>
             </properties>
           </component>
+          <component id="43f94" class="javax.swing.JButton" binding="carritoDeComprasButton">
+            <constraints>
+              <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <background color="-1118743"/>
+              <icon value="imagenes/Carrito_De_Compras.png"/>
+              <text value=""/>
+            </properties>
+          </component>
           <component id="8be59" class="javax.swing.JButton" binding="cerrarSesionButton">
             <constraints>
               <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
@@ -89,14 +99,12 @@
               <text value="Cerrar Sesión"/>
             </properties>
           </component>
-          <component id="43f94" class="javax.swing.JButton" binding="carritoDeComprasButton">
+          <component id="45776" class="javax.swing.JButton" binding="pedidosButton" default-binding="true">
             <constraints>
-              <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <background color="-1118743"/>
-              <icon value="imagenes/Carrito_De_Compras.png"/>
-              <text value=""/>
+              <text value="Pedidos"/>
             </properties>
           </component>
         </children>

@@ -25,6 +25,7 @@ public class VentanaCatalogo extends JFrame {
 
     private JButton carritoDeComprasButton;
     private JButton cerrarSesionButton;
+    private JButton pedidosButton;
 
     public VentanaCatalogo() {
         super("Tech System Core");
@@ -36,6 +37,11 @@ public class VentanaCatalogo extends JFrame {
         cerrarSesionButton.addActionListener(e -> volverLogin());
         carritoDeComprasButton.addActionListener(e -> abrirCarrito());
         configurarBotonesDeFiltro();
+
+        pedidosButton.addActionListener(e -> {
+            this.dispose();
+            new Pedidos().setVisible(true);
+        });
 
         // -------------------------------------------------------------
         // CORRECCIÓN PANTALLA BLANCA: Cargar SOLO cuando la ventana esté lista

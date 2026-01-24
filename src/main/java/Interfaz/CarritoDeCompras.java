@@ -112,8 +112,17 @@ public class CarritoDeCompras extends JFrame {
         });
 
         btnPagar.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this, "¡Aquí irá la pasarela de pago en el futuro!");
-            // Aquí llamaremos al método de facturación
+            // 1. Validar que el carrito no esté vacío antes de abrir el pago
+            Cliente c = (Cliente) Sesion.usuarioLogueado;
+            if (c.getCarrito().getItems().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Tu carrito está vacío. Agrega productos primero.");
+                return;
+            }
+
+            // 2. ABRIR TU CLASE PROCESO DE PAGO
+            // Pasamos 'this' (la ventana del carrito) para cerrarla si la compra sale bien
+            ProcesoDePago pago = new ProcesoDePago(this);
+            pago.setVisible(true);
         });
     }
 

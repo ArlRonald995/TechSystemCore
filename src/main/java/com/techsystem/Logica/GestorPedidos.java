@@ -67,7 +67,7 @@ public class GestorPedidos {
             carrito.vaciar();
 
             // D) Iniciar simulación de envío (Logística) en segundo plano
-            iniciarSimulacionEnvio(idPedido);
+            iniciarSimulacionEnvio(idPedido,cliente.getDireccion());
 
             return true;
 
@@ -83,7 +83,7 @@ public class GestorPedidos {
     }
 
     // 2. SIMULACIÓN DE LOGÍSTICA (Hilo en 2do plano)
-    private void iniciarSimulacionEnvio(int idPedido) {
+    private void iniciarSimulacionEnvio(int idPedido, String direccionCliente) {
         new Thread(() -> {
             try {
                 // Espera inicial
@@ -96,12 +96,10 @@ public class GestorPedidos {
                 // Tiempo de viaje (los 10 seg restantes para completar tus 15 aprox)
                 Thread.sleep(10000);
 
-                actualizarEstadoPedido(idPedido, "Entregado", "Domicilio Cliente");
+                actualizarEstadoPedido(idPedido, "Entregado", direccionCliente);
                 System.out.println("🏠 Pedido " + idPedido + ": Entregado. ¡Ya puede opinar!");
 
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            } catch (InterruptedException e) { e.printStackTrace(); }
         }).start();
     }
 
@@ -118,7 +116,7 @@ public class GestorPedidos {
         }
     }
 
-    // 3. RECUPERAR PEDIDOS DE UN USUARIO (Para la vista de "Mis Facturas")
+// 3. RECUPERAR PEDIDOS DE UN USUARIO (MODIFICADO para cargar detalles)
     public List<Pedido> obtenerPedidosPorUsuario(int usuarioId) {
         List<Pedido> lista = new ArrayList<>();
         String sql = "SELECT * FROM pedidos WHERE usuario_id = ? ORDER BY fecha_compra DESC";
@@ -137,14 +135,49 @@ public class GestorPedidos {
                         rs.getString("estado_envio"),
                         rs.getString("ubicacion_actual")
                 );
-                // Aquí podrías cargar los detalles llamando a otro método si quieres ver el desglose
+
+                // --- AQUÍ ESTÁ EL CAMBIO CLAVE ---
+                // Ahora sí cargamos la lista de productos de este pedido
+                p.setDetalles(obtenerDetallesDePedido(p.getId()));
+
                 lista.add(p);
             }
         } catch (SQLException e) { e.printStackTrace(); }
         return lista;
     }
 
-    // 4. GUARDAR VALORACIÓN (Reseña)
+    // 4. NUEVO MÉTODO AUXILIAR (Añádelo al final de la clase)
+    private List<DetallePedido> obtenerDetallesDePedido(int pedidoId) {
+        List<DetallePedido> detalles = new ArrayList<>();
+        // Hacemos un JOIN para obtener el NOMBRE del producto desde la tabla 'productostienda_raw'
+        // ya que en 'detalle_pedidos' solo guardaste el SKU.
+        String sql = "SELECT d.producto_sku, d.cantidad, d.precio_unitario, p.nombre " +
+                "FROM detalle_pedidos d " +
+                "JOIN productostienda_raw p ON d.producto_sku = p.sku " +
+                "WHERE d.pedido_id = ?";
+
+        try (Connection con = Conexion.conectar();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, pedidoId);
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()) {
+                // Creamos el objeto con los datos recuperados
+                detalles.add(new DetallePedido(
+                        rs.getString("producto_sku"),
+                        rs.getString("nombre"), // Nombre real del producto
+                        rs.getInt("cantidad"),
+                        rs.getDouble("precio_unitario")
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return detalles;
+    }
+
+    // 5. GUARDAR VALORACIÓN (Reseña)
     public boolean agregarValoracion(Valoracion val) {
         String sql = "INSERT INTO valoraciones (usuario_id, producto_sku, puntuacion, comentario, fecha) VALUES (?, ?, ?, ?, CURRENT_DATE)";
         try (Connection con = Conexion.conectar();

@@ -25,7 +25,7 @@
           <text value="No tiene una cuenta?"/>
         </properties>
       </component>
-      <component id="70dbe" class="javax.swing.JButton" binding="registreseButton" default-binding="true">
+      <component id="70dbe" class="javax.swing.JButton" binding="btnRegistrarse">
         <constraints>
           <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -41,7 +41,7 @@
           <text value="Nombre de Usuario:"/>
         </properties>
       </component>
-      <component id="b6023" class="javax.swing.JTextField" binding="entradaUsuario">
+      <component id="b6023" class="javax.swing.JTextField" binding="txtCorreo">
         <constraints>
           <grid row="3" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
             <preferred-size width="150" height="-1"/>
@@ -57,7 +57,7 @@
           <text value="Contraseña:"/>
         </properties>
       </component>
-      <component id="63177" class="javax.swing.JPasswordField" binding="entradaContraseña">
+      <component id="63177" class="javax.swing.JPasswordField" binding="txtContrasena">
         <constraints>
           <grid row="5" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
             <preferred-size width="150" height="-1"/>
@@ -65,7 +65,7 @@
         </constraints>
         <properties/>
       </component>
-      <component id="77b74" class="javax.swing.JButton" binding="accederButton" default-binding="true">
+      <component id="77b74" class="javax.swing.JButton" binding="btnIngresar">
         <constraints>
           <grid row="6" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>

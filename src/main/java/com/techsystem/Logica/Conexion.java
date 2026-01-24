@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class Conexion {
     // Configuración de Docker
-    private static final String URL = "jdbc:postgresql://localhost:5432/postgres";
+    private static final String URL = "jdbc:postgresql://localhost:5432/InventarioTienda";
     private static final String USER = "AdminTienda";
     private static final String PASS = "admin123";
 

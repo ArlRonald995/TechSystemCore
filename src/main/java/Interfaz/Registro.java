@@ -1,66 +1,100 @@
 package Interfaz;
 
+import com.techsystem.Logica.GestorUsuarios;
 import javax.swing.*;
 
 public class Registro extends JFrame {
+    // Componentes del .form (Mantenemos tus nombres para no romper el diseño)
     private JPanel panelRegistro;
-    private JTextField textField1;
-    private JTextField textField2;
-    private JTextField textField3;
-    private JTextField textField4;
-    private JTextField textField5;
-    private JTextField textField6;
+    private JTextField txtNombre; // Nombre
+    private JTextField txtEmail;// Email
+    private JTextField txtContrasena; // Contraseña (Debería ser JPasswordField idealmente)
+    private JTextField txtDireccion;
+
     private JButton registreseButton;
     private JButton cancelarButton;
 
+
     public Registro() {
-        // Configuración inicial de la ventana (título)
-        super("Registrese"); // Es es nombre en la parte superior de la ventana
+        super("Registrese");
 
-        // Creacion del Scroll y le metemos el panel del diseño
+        // Configuración del Scroll y Panel
         JScrollPane scroll = new JScrollPane(panelRegistro);
-        scroll.getVerticalScrollBar().setUnitIncrement(15); // Velocidad del scroll
-
-        // Decimos: "El contenido de esta ventana es el scroll (que tiene el panel)"
+        scroll.getVerticalScrollBar().setUnitIncrement(15);
         this.setContentPane(scroll);
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        //this.setSize(700, 600); // Ajustar a un tamaño fijo
-        this.setLocationRelativeTo(null); // Centrar en pantalla
-        this.pack();//Para que el tamaño se ajuste al contenido automáticamente
+        this.setLocationRelativeTo(null);
+        this.pack(); // Ajusta tamaño al contenido
 
+        // Aplicar estilos
         configuracionBotones();
 
+        // --- ACCIÓN: REGISTRARSE ---
         registreseButton.addActionListener(e -> {
-            JOptionPane.showMessageDialog(null, "Cuenta creada con exito");
-            regresarLogin();
+            procesarRegistro();
         });
 
+        // --- ACCIÓN: CANCELAR ---
         cancelarButton.addActionListener(e -> {
             regresarLogin();
         });
+    }
 
+    private void procesarRegistro() {
+        // 1. Mapear los textField a variables con sentido
+        // Verifica que este orden coincida con tu diseño visual (arriba a abajo)
+        String nombre = txtNombre.getText().trim();
+        String email = txtEmail.getText().trim();
+        String password = txtContrasena.getText().trim();
+        String direccion = txtDireccion.getText().trim();
+
+        // 2. Validaciones básicas
+        if (nombre.isEmpty() || email.isEmpty() || password.isEmpty() || direccion.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                    "Por favor llene los campos obligatorios (Nombre, Email, Pass, Dirección).",
+                    "Campos Vacíos",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // 3. Conexión con Base de Datos
+        GestorUsuarios gestor = new GestorUsuarios();
+        boolean exito = gestor.registrarCliente(nombre, email, password, direccion);
+
+        if (exito) {
+            JOptionPane.showMessageDialog(this, "¡Cuenta creada con éxito! Bienvenido.");
+            regresarLogin();
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "Error al registrar. Verifique que el correo no esté ya en uso.",
+                    "Error de Registro",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void configuracionBotones() {
-        Estilos.botonesBonitos2(registreseButton);
-        Estilos.botonesBonitos2(cancelarButton);
-        Estilos.hacerBotonRedondo(registreseButton);
-        Estilos.hacerBotonRedondo(cancelarButton);
+        try {
+            Estilos.botonesBonitos2(registreseButton);
+            Estilos.botonesBonitos2(cancelarButton);
+            Estilos.hacerBotonRedondo(registreseButton);
+            Estilos.hacerBotonRedondo(cancelarButton);
+        } catch (Exception e) {
+            // Ignoramos si la clase Estilos no está disponible o falla
+        }
     }
 
     private void regresarLogin() {
         InicioDeSesion login = new InicioDeSesion();
         login.setVisible(true);
-        login.setLocationRelativeTo(null);
+        // login.setLocationRelativeTo(null); // No suele ser necesario si el login ya se centra en su constructor
         this.dispose();
-
     }
 
     public static void main(String[] args) {
-        //Asegura que la ventana se dibuje en el hilo correcto de memoria para evitar errores
         SwingUtilities.invokeLater(() -> {
             Registro registro = new Registro();
             registro.setVisible(true);
         });
-    }}
+    }
+}

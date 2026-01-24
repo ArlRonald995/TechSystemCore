@@ -9,10 +9,63 @@ import java.util.List;
 
 public class GestorProductos {
 
-    // Método principal que llama tu interfaz
+    // ==============================================================
+    // 1. MÉTODO PARA FILTRAR POR GRUPOS (CATEGORÍAS DE LA VENTANA)
+    // ==============================================================
+    public List<Producto> obtenerProductosPorCategoria(String categoria) {
+        if (categoria == null || categoria.equalsIgnoreCase("TODO")) {
+            return obtenerTodosLosProductos();
+        }
+
+        List<Producto> listaFiltrada = new ArrayList<>();
+        String sql;
+
+        // LÓGICA DE AGRUPACIÓN
+        switch (categoria) {
+            case "GRUPO_COMPUTADORES":
+                sql = "SELECT * FROM productostienda_raw WHERE LOWER(tipo) IN ('portátil', 'laptop', 'escritorio', 'pc', 'computadora')";
+                break;
+            case "GRUPO_MOVILES":
+                sql = "SELECT * FROM productostienda_raw WHERE LOWER(tipo) IN ('celular', 'smartphone', 'movil', 'tablet', 'smartwatch', 'reloj')";
+                break;
+            case "GRUPO_COMPONENTES":
+                sql = "SELECT * FROM productostienda_raw WHERE LOWER(tipo) IN ('memoriaram', 'ram', 'memoria', 'almacenamiento', 'disco', 'ssd', 'hdd', 'procesador', 'cpu')";
+                break;
+            case "GRUPO_PERIFERICOS":
+                sql = "SELECT * FROM productostienda_raw WHERE LOWER(tipo) IN ('monitor', 'pantalla', 'teclado', 'raton', 'mouse', 'periferico')";
+                break;
+            default:
+                sql = "SELECT * FROM productostienda_raw WHERE LOWER(tipo) = LOWER(?)";
+                break;
+        }
+
+        try (Connection con = Conexion.conectar();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            if (!categoria.startsWith("GRUPO_")) {
+                ps.setString(1, categoria);
+            }
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                try {
+                    Producto p = crearProductoDesdeRS(rs);
+                    if (p != null) listaFiltrada.add(p);
+                } catch (Exception ex) {
+                    System.err.println("Error saltado en producto: " + ex.getMessage());
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return listaFiltrada;
+    }
+
+    // ==============================================================
+    // 2. MÉTODO PRINCIPAL (TRAE TODO)
+    // ==============================================================
     public List<Producto> obtenerTodosLosProductos() {
         List<Producto> inventario = new ArrayList<>();
-        // Asegúrate que la tabla en Docker se llame 'productostienda_raw'
         String sql = "SELECT * FROM productostienda_raw";
 
         try (Connection con = Conexion.conectar();
@@ -22,25 +75,24 @@ public class GestorProductos {
             while (rs.next()) {
                 try {
                     Producto p = crearProductoDesdeRS(rs);
-                    if (p != null) {
-                        inventario.add(p);
-                    }
+                    if (p != null) inventario.add(p);
                 } catch (Exception ex) {
-                    System.err.println("Error al procesar un producto (SKU: " + rs.getString("sku") + "): " + ex.getMessage());
+                    System.err.println("Error procesando SKU " + rs.getString("sku") + ": " + ex.getMessage());
                 }
             }
         } catch (SQLException e) {
-            System.err.println("Error fatal de conexión o SQL: " + e.getMessage());
             e.printStackTrace();
         }
         return inventario;
     }
 
-    // --- FÁBRICA DE OBJETOS (El Corazón del Polimorfismo) ---
+    // ==============================================================
+    // 3. FÁBRICA DE OBJETOS
+    // ==============================================================
     private Producto crearProductoDesdeRS(ResultSet rs) throws SQLException {
 
-        // 1. DATOS BASE (Producto)
-        String tipo = rs.getString("tipo"); // La columna discriminadora
+        // A) DATOS BASE
+        String tipo = rs.getString("tipo");
         if (tipo == null) return null;
 
         String sku = rs.getString("sku");
@@ -49,136 +101,91 @@ public class GestorProductos {
         double precio = rs.getDouble("precio");
         int stock = rs.getInt("stock");
         String marca = rs.getString("marca");
-        // Asegúrate que la columna de imagen se llame 'imagen_ruta' en tu BD
-        String img = rs.getString("imagen_ruta");
 
-        // 2. DATOS TÉCNICOS COMUNES (Valores por defecto o leídos si existen columnas)
-        // Nota: Para que el código corra con tu tabla actual, usaremos valores genéricos
-        // para los datos que quizás aún no tienes en columnas (como voltaje o sockets).
-        double voltaje = 110.0;
-        double consumo = 50.0;
-        int garantia = 12; // meses
+        // B) ALGORITMO DE IMAGEN (Sin SQL)
+// B) ALGORITMO DE IMAGEN MEJORADO
+        String nombreBase = nombre.replace('\u00A0', ' ').trim();
 
-        // 3. SWITCH: DECIDIR QUÉ CLASE INSTANCIAR
+        // 2. Estandarización agresiva
+        String nombreLimpio = nombreBase
+                .replace(" ", "_")      // Espacios -> Guiones bajos
+                .replace("-", "_")      // Guiones medios -> Guiones bajos (Para Intel Core i3-13100 -> i3_13100)
+                .replace("\"", "")      // Comillas de pulgadas
+                .replace("'", "")
+                .replace("/", "_")
+                .replace(":", "")
+                .replace("(", "")       // Quitamos paréntesis para evitar problemas de "(9na_Gen)" vs "(9na Gen)"
+                .replace(")", "");
+
+        // 3. Eliminar guiones bajos duplicados (ej: "Adata__Ddr4" -> "Adata_Ddr4")
+        while (nombreLimpio.contains("__")) {
+            nombreLimpio = nombreLimpio.replace("__", "_");
+        }
+
+        // 4. INTENTO DE BÚSQUEDA INTELIGENTE
+        // Primero buscamos el nombre super limpio (ej: iPad_10.2_9na_Gen_1)
+        String img = buscarImagenEnRecursos(nombreLimpio);
+
+        // C) SWITCH DE INSTANCIACIÓN (Solo clases Concretas)
         switch (tipo.toLowerCase().trim()) {
+            // COMPUTADORES
+            case "portátil": case "laptop":
+                return new Laptop(sku, nombre, desc, precio, stock, marca, img, tipo, 19.5, 65.0, 12, 512, "Intel i5", 3, true, true, false, 16, "SSD", "FHD", 15.6, "IPS", 60, true, 50, 2.1);
 
-            // --- COMPUTADORES Y DISPOSITIVOS MÓVILES ---
-            case "laptop":
-            case "portatil":
-                return new Laptop(sku, nombre, desc, precio, stock, marca, img, tipo,
-                        19.5, 65.0, 12, 512, "Intel Core i5", 3, true, true, false, // Elec
-                        16, "SSD", // Computador
-                        "1920x1080", 15.6, "IPS", 60, // Pantalla
-                        true, 50, 2.1); // <--- (Webcam=true, Bateria, Peso)
-            case "celular":
-            case "smartphone":
-            case "movil":
-                // Aquí definimos el OS según la marca (lógica simple para el ejemplo)
-                String os = marca.equalsIgnoreCase("Apple") ? "iOS" : "Android";
+            case "escritorio": case "pc": case "computadora":
+                return new Escritorio(sku, nombre, desc, precio, stock, marca, img, tipo, 110.0, 450.0, 24, 1024, "Intel i7", 4, true, true, false, 32, "SSD", "ATX", false);
 
-                return new Celular(sku, nombre, desc, precio, stock, marca, img, tipo,
-                        5.0, 5.0, 12, 128, "Snapdragon", 2, true, true, true, // Elec + 5G
-                        50, os, // <--- Pasamos el OS nuevo
-                        "2400x1080", 6.5, "AMOLED", 120); // Pantalla
+            // MÓVILES
+            case "celular": case "smartphone": case "movil":
+                return new Celular(sku, nombre, desc, precio, stock, marca, img, tipo, 5.0, 15.0, 24, 128, "Snapdragon", 2, true, true, true, 80, "Android", "AMOLED", 6.5, "Gorilla", 120);
 
             case "tablet":
-                // Lógica simple para el ejemplo del OS
-                String osTablet = marca.equalsIgnoreCase("Apple") ? "iPadOS" : "Android";
-                return new Tablet(sku, nombre, desc, precio, stock, marca, img, tipo,
-                        5.0, 10.0, 12, 64, "M2", 2, true, true, false, // false en 5G = Solo WiFi
-                        "2000x1200", 10.9, "LCD", 60,
-                        true, osTablet); // Stylus, OS
+                return new Tablet(sku, nombre, desc, precio, stock, marca, img, tipo, 5.0, 10.0, 12, 64, "M2", 2, true, true, false, "Liquid Retina", 10.9, "IPS", 60, true, "iPadOS");
 
-            case "smartwatch":
-            case "reloj":
-                return new SmartWatch(sku, nombre, desc, precio, stock, marca, img, tipo,
-                        5.0, 1.0, 12, 4, "ARM Cortex", 1, true, true, false, // Elec
-                        "400x400", 1.4, "OLED", 60, // Pantalla
-                        "Silicona", true, "Ritmo Cardíaco, Pasos, Sueño"); // <--- Sensores añadidos
+            case "smartwatch": case "reloj":
+                return new SmartWatch(sku, nombre, desc, precio, stock, marca, img, tipo, 5.0, 2.0, 12, 32, "S9 SiP", 1, true, true, false, "OLED", 1.9, "Sapphire", 60, "Fluoroelastómero", true, "Salud Completa");
 
-            case "escritorio":
-            case "pc":
-            case "computadora":
-                return new Escritorio(sku, nombre, desc, precio, stock, marca, img, tipo,
-                        110.0, 450.0, 24, 1024, "Intel Core i7", 4, true, true, false,
-                        32, "SSD NVMe",
-                        "Torre ATX", false); // Factor, Perifericos incluidos
+            // COMPONENTES
+            case "memoriaram": case "ram": case "memoria":
+                return new MemoriaRam(sku, nombre, desc, precio, stock, marca, img, tipo, 1.35, 99, "DIMM", 16, "DDR5", 5200);
 
-            // --- PERIFÉRICOS ---
+            case "almacenamiento": case "disco": case "ssd": case "hdd":
+                return new Almacenamiento(sku, nombre, desc, precio, stock, marca, img, tipo, 3.3, 5.0, 36, "M.2", "NVMe", 1, 3500);
+
+            case "procesador": case "cpu":
+                return new Procesador(sku, nombre, desc, precio, stock, marca, img, tipo, 1.2, 65.0, 36, "LGA1700", "i5-12400", 4, 6);
+
+            // PERIFÉRICOS
+            case "monitor": case "pantalla":
+                return new Monitor(sku, nombre, desc, precio, stock, marca, img, tipo, 110.0, 35.0, 36, "HDMI", true, "FHD", 24.0, "IPS", 75, false, true);
+
             case "teclado":
-                return new Teclado(sku, nombre, desc, precio, stock, marca, img, tipo,
-                        5.0, 2.5, 24,   // Elec (Voltaje, Consumo, Garantia)
-                        "USB-C", true,  // Periferico
-                        "Mecánico Blue", true); // Teclado
+                return new Teclado(sku, nombre, desc, precio, stock, marca, img, tipo, 5.0, 2.0, 24, "USB", true, "Mecánico", true);
 
-            case "raton":
-            case "mouse":
-                return new Raton(sku, nombre, desc, precio, stock, marca, img, tipo,
-                        5.0, 1.0, 24,   // Elec
-                        "Wireless 2.4G", true, // Periferico
-                        16000, 6);      // Raton
-
-            case "monitor":
-            case "pantalla":
-                return new Monitor(sku, nombre, desc, precio, stock, marca, img, tipo,
-                        110.0, 35.0, 36, // Elec
-                        "HDMI 2.1", true, // Periferico
-                        "3840x2160", 27.0, "IPS", 144, // Pantalla
-                        false, true);    // Monitor
-
-            // --- COMPONENTES INTERNOS ---
-            case "procesador":
-            case "cpu":
-                return new Procesador(sku, nombre, desc, precio, stock, marca, img, tipo,
-                        1.2, 125.0, 36, // Elec
-                        "LGA 1700",    // Socket
-                        "i9-14900K", 5, 24); // Modelo, GHz, Nucleos
-
-            case "ram":
-            case "memoria":
-                return new MemoriaRam(sku, nombre, desc, precio, stock, marca, img, tipo,
-                        1.35, 99,       // Voltaje, Garantia
-                        "DIMM",         // Socket
-                        16, "DDR5", 5200); // Cap, Tipo, Mhz
-
-            case "almacenamiento":
-            case "disco":
-                return new Almacenamiento(sku, nombre, desc, precio, stock, marca, img, tipo,
-                        3.3, 5.0, 60,   // Elec
-                        "M.2",          // Socket
-                        "NVMe Gen4", 1, 5000); // Tipo, TB, MBs
+            case "raton": case "mouse":
+                return new Raton(sku, nombre, desc, precio, stock, marca, img, tipo, 5.0, 1.0, 24, "USB", true, 16000, 6);
 
             default:
-                // Si el tipo no coincide, lo imprimimos en consola para depurar
-                System.out.println("⚠️ Tipo de producto desconocido en BD: " + tipo);
+                // CORRECCIÓN: Si el tipo no es reconocido o es una clase abstracta (Periferico, Componente),
+                // retornamos null para que el gestor simplemente ignore este producto.
+                System.out.println("⚠️ Tipo de producto no soportado: " + tipo + " (SKU: " + sku + ")");
                 return null;
         }
     }
-    // MÉTODO PARA QUE EL ADMIN INGRESE NUEVO STOCK
-    public boolean agregarProductoNuevo(Producto p) {
-        // Nota: Guardamos los datos base. En un sistema real, deberíamos guardar
-        // los atributos específicos (RAM, OS) en otras columnas o tablas.
 
-        String sql = "INSERT INTO productostienda_raw (tipo, sku, nombre, marca, precio, stock, descripcion, imagen_ruta) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    // ==============================================================
+    // 4. ALGORITMO DE BÚSQUEDA DE IMAGEN
+    // ==============================================================
+    private String buscarImagenEnRecursos(String nombreBase) {
+        String[] extensiones = {".jpeg", ".jpg", ".png", ".JPG", ".PNG"};
 
-        try (Connection con = Conexion.conectar();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-
-            ps.setString(1, p.getClase()); // Ej: "Laptop", "Celular"
-            ps.setString(2, p.getSku());
-            ps.setString(3, p.getNombre());
-            ps.setString(4, p.getMarca());
-            ps.setDouble(5, p.getPrecio());
-            ps.setInt(6, p.getStock());
-            ps.setString(7, p.getDescripcion());
-            ps.setString(8, p.getRutaImagen()); // Si no hay imagen, guarda null o string vacío
-
-            return ps.executeUpdate() > 0;
-
-        } catch (SQLException e) {
-            System.err.println("Error al insertar producto: " + e.getMessage());
-            return false;
+        for (String ext : extensiones) {
+            String nombreArchivo = nombreBase + ext;
+            if (getClass().getResource("/imagenes/" + nombreArchivo) != null) {
+                return nombreArchivo; // ¡ENCONTRADO!
+            }
         }
+        System.out.println("❌ NO ENCONTRADO: Busqué el archivo '" + nombreBase + "' (con varias extensiones) pero no existe.");
+        return "Logo1.png";
     }
 }

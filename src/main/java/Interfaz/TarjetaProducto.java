@@ -14,6 +14,7 @@ public class TarjetaProducto extends JPanel {
     private JButton verDetallesButton;
     private JLabel txtPrecio;
     private JLabel txtNombre;
+    private JLabel lblEstrellas;
 
     // --- VARIABLES DE LÓGICA ---
     // Guardamos el objeto entero para poder enviarlo al carrito después
@@ -48,8 +49,40 @@ public class TarjetaProducto extends JPanel {
         this.productoCompleto = p;
 
         // B) Llenamos textos básicos
-        txtNombre.setText(p.getNombre());
-        txtPrecio.setText(String.format("$ %.2f", p.getPrecio()));
+        if (txtNombre != null) txtNombre.setText(p.getNombre());
+        if (txtPrecio != null) txtPrecio.setText(String.format("$ %.2f", p.getPrecio()));
+
+        // ---------------------------------------------------------
+        // NUEVO: LÓGICA DE VALORACIONES (ESTRELLAS)
+        // ---------------------------------------------------------
+        if (lblEstrellas != null) {
+            com.techsystem.Logica.GestorProductos gestor = new com.techsystem.Logica.GestorProductos();
+            double promedio = gestor.obtenerPromedioValoracion(p.getSku());
+
+            lblEstrellas.setText(convertirAEstrellas(promedio));
+            lblEstrellas.setForeground(new java.awt.Color(255, 140, 0));
+            lblEstrellas.setFont(new java.awt.Font("Segoe UI Emoji", java.awt.Font.PLAIN, 14));
+            lblEstrellas.setHorizontalAlignment(SwingConstants.CENTER);
+
+            // >>> LO NUEVO: CAMBIAR EL CURSOR Y AGREGAR EL CLICK <<<
+            lblEstrellas.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+            lblEstrellas.setToolTipText("Clic para leer los comentarios");
+
+            // Limpiamos listeners anteriores para no duplicar acciones al recargar
+            for (java.awt.event.MouseListener ml : lblEstrellas.getMouseListeners()) {
+                lblEstrellas.removeMouseListener(ml);
+            }
+
+            // Agregamos el evento de clic
+            lblEstrellas.addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
+                public void mouseClicked(java.awt.event.MouseEvent e) {
+                    // Abrimos la ventana de comentarios pasando el producto actual
+                    java.awt.Window parent = javax.swing.SwingUtilities.getWindowAncestor(lblEstrellas);
+                    new VentanaComentarios(parent, p).setVisible(true);
+                }
+            });
+        }
 
         // C) ALGORITMO DE IMAGEN "FIT CENTER" (Mejorado)
         String ruta = "/imagenes/" + p.getRutaImagen();
@@ -84,14 +117,16 @@ public class TarjetaProducto extends JPanel {
                 Image imgEscalada = imgOriginal.getScaledInstance(anchoFinal, altoFinal, Image.SCALE_SMOOTH);
 
                 // 5. Asignar al Label
-                lblImagen.setIcon(new ImageIcon(imgEscalada));
-                lblImagen.setHorizontalAlignment(SwingConstants.CENTER);
-                lblImagen.setVerticalAlignment(SwingConstants.CENTER);
-                lblImagen.setText(""); // Borrar texto por defecto
+                if (lblImagen != null) {
+                    lblImagen.setIcon(new ImageIcon(imgEscalada));
+                    lblImagen.setHorizontalAlignment(SwingConstants.CENTER);
+                    lblImagen.setVerticalAlignment(SwingConstants.CENTER);
+                    lblImagen.setText(""); // Borrar texto por defecto
+                }
             }
         } catch (Exception e) {
             System.err.println("Error cargando imagen: " + p.getNombre());
-            lblImagen.setText("Sin Img");
+            if (lblImagen != null) lblImagen.setText("Sin Img");
         }
     }
 
@@ -113,7 +148,22 @@ public class TarjetaProducto extends JPanel {
 
         miniVentana.setVisible(true);
     }
+    private String convertirAEstrellas(double promedio) {
+        if (promedio == 0) return "Sin calificaciones";
 
+        StringBuilder sb = new StringBuilder();
+        int estrellasLlenas = (int) Math.round(promedio);
+
+        // Dibujamos hasta 5 estrellas
+        for (int i = 0; i < 5; i++) {
+            if (i < estrellasLlenas) {
+                sb.append("⭐"); // Estrella llena
+            } else {
+                sb.append("☆");  // Estrella vacía (opcional, si quieres que se vea el hueco)
+            }
+        }
+        return sb.toString();
+    }
     // --- COMPONENTES PERSONALIZADOS (Bordes Redondos del Panel) ---
     private void createUIComponents() {
         panelTarjeta = new JPanel() {

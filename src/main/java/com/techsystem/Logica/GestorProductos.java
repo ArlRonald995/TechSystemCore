@@ -188,4 +188,81 @@ public class GestorProductos {
         System.out.println("❌ NO ENCONTRADO: Busqué el archivo '" + nombreBase + "' (con varias extensiones) pero no existe.");
         return "Logo1.png";
     }
+    public double obtenerPromedioValoracion(String sku) {
+        String sql = "SELECT AVG(puntuacion) FROM valoraciones WHERE producto_sku = ?";
+        try (Connection con = Conexion.conectar();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, sku);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                // getDouble devuelve 0.0 si es null, perfecto para nosotros
+                return rs.getDouble(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0.0;
+    }
+    public java.util.List<String[]> obtenerResenasDetalladas(String sku) {
+        java.util.List<String[]> lista = new java.util.ArrayList<>();
+
+        // Hacemos JOIN con usuarios para saber quién escribió
+        String sql = "SELECT u.nombre, v.puntuacion, v.comentario, v.fecha " +
+                "FROM valoraciones v " +
+                "JOIN usuarios u ON v.usuario_id = u.id " +
+                "WHERE v.producto_sku = ? " +
+                "ORDER BY v.fecha DESC";
+
+        try (java.sql.Connection con = Conexion.conectar();
+             java.sql.PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, sku);
+            java.sql.ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                String[] datos = new String[4];
+                datos[0] = rs.getString("nombre");      // Quién
+                datos[1] = String.valueOf(rs.getInt("puntuacion")); // Cuántas estrellas
+                datos[2] = rs.getString("comentario");  // Qué dijo
+                datos[3] = rs.getString("fecha");       // Cuándo
+                lista.add(datos);
+            }
+        } catch (java.sql.SQLException e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
+    public boolean registrarProducto(Producto p, String jsonEspecificaciones) {
+        // CORRECCIÓN: Eliminamos 'ruta_imagen' del SQL porque esa columna NO existe.
+        // El sistema calcula la imagen automáticamente por el nombre.
+        String sql = "INSERT INTO productostienda_raw (sku, nombre, descripcion, precio, stock, tipo, marca, especificaciones) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try (java.sql.Connection con = Conexion.conectar();
+             java.sql.PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, p.getSku());
+            ps.setString(2, p.getNombre());
+            ps.setString(3, p.getDescripcion());
+            ps.setDouble(4, p.getPrecio());
+            ps.setInt(5, p.getStock());
+
+            // Usamos el nombre de la clase (Laptop, Celular...) para la columna 'tipo'
+            ps.setString(6, p.getClass().getSimpleName());
+
+            ps.setString(7, p.getMarca());
+
+            // ELIMINADO: ps.setString(8, p.getRutaImagen());
+
+            // Ahora el JSON es el parámetro 8
+            ps.setString(8, jsonEspecificaciones);
+
+            ps.executeUpdate();
+            return true;
+        } catch (java.sql.SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

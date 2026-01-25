@@ -1,8 +1,12 @@
 package Interfaz;
 
+import com.techsystem.Logica.GestorPedidos;
+import com.techsystem.Logica.Pedido;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.List;
 
 public class VentanaAdmin extends JFrame {
 
@@ -10,34 +14,44 @@ public class VentanaAdmin extends JFrame {
     private JPanel panelHeader;
     private JLabel txtTienda;
     private JButton cerrarSesionButton;
-    private JButton ADMINbutton;
+    private JButton ADMINbutton; // Botón "Actualizar"
     private JPanel panelContent;
     private JButton agregarProductoButton;
 
     public VentanaAdmin(){
-        super("Administración"); // Título de la ventana
+        super("Administración - TechSystem");
 
         this.setContentPane(panelVentanaAdmin);
-        this.setSize(700, 600);
+        this.setSize(900, 600); // Un poco más ancha para ver bien los datos
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // 2. Armar la estructura y cargar la tabla
-        armarEstucturaPanel();
-        Estilos.botonesBonitos(ADMINbutton);
-        Estilos.botonesBonitos2(cerrarSesionButton);
-        Estilos.botonesBonitos2(agregarProductoButton);
+        // 1. Armar estructura
+        armarEstructuraPanel();
 
-        agregarProductoButton.addActionListener(e -> {
+        // 2. Estilos
+        try {
+            Estilos.botonesBonitos(ADMINbutton); // Este botón servirá para REFRESCAR la tabla
+            ADMINbutton.setText("🔄 Actualizar Tabla");
 
-            abrirAgregarProducto();
-        });
+            Estilos.botonesBonitos2(cerrarSesionButton);
+            Estilos.botonesBonitos2(agregarProductoButton);
+        } catch (Exception e) {}
+
+        // 3. Cargar datos reales al iniciar
+        cargarTablaPedidos();
+
+        // --- LISTENERS ---
+        agregarProductoButton.addActionListener(e -> abrirAgregarProducto());
 
         cerrarSesionButton.addActionListener(e -> {
             InicioDeSesion inicioDeSesion = new InicioDeSesion();
             inicioDeSesion.setVisible(true);
             this.dispose();
         });
+
+        // Botón del header (antes ADMINbutton) ahora refresca la lista
+        ADMINbutton.addActionListener(e -> cargarTablaPedidos());
     }
 
     private void abrirAgregarProducto() {
@@ -45,61 +59,77 @@ public class VentanaAdmin extends JFrame {
         agregarProducto.setVisible(true);
     }
 
-    private void armarEstucturaPanel() {
-        // --- Configuración del Layout Principal ---
-        // Aseguramos que el panel principal use BorderLayout
-        panelVentanaAdmin.setLayout(new BorderLayout());
+    // Método para limpiar y reconstruir la tabla con datos reales
+    private void cargarTablaPedidos() {
+        panelContent.removeAll(); // Limpiamos la tabla anterior
 
-        // Añadimos el Header al Norte
-        panelVentanaAdmin.add(panelHeader, BorderLayout.NORTH);
+        // 1. Definir columnas
+        String[] columnas = {"ID", "Fecha", "Cliente ID", "Estado", "Total ($)", "Detalles"};
 
-        // Configuración de panelContent (donde irán los elementos)
-        panelContent.setLayout(new BoxLayout(panelContent, BoxLayout.Y_AXIS));
-        panelContent.setBackground(Color.WHITE);
-
-        // --- CREACIÓN DE LA TABLA ---
-        String[] columnas = {"ID", "Pedido", "Cliente", "Total", "Fecha"};
-        Object[][] datos = {
-                {1, "Cel", "Juanito", 4500.00, "12/05/2024"},
-                {2, "Laptop", "Maria", 1200.50, "13/05/2024"},
-                {3, "Tablet", "Carlos", 300.75, "14/05/2024"},
-                {4, "Monitor", "Ana", 250.00, "15/05/2024"},
-                {5, "Teclado", "Luis", 75.20, "16/05/2024"},
-
+        // 2. Modelo de tabla no editable
+        DefaultTableModel model = new DefaultTableModel(columnas, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Que no puedan editar celdas manualmente
+            }
         };
 
-        // Usamos DefaultTableModel para que sea más fácil editar luego
-        DefaultTableModel model = new DefaultTableModel(datos, columnas);
+        // 3. Obtener datos de la BD
+        GestorPedidos gestor = new GestorPedidos();
+        List<Pedido> listaPedidos = gestor.obtenerTodosLosPedidos();
+
+        for (Pedido p : listaPedidos) {
+            Object[] fila = {
+                    p.getId(),
+                    p.getFechaFormateada(),
+                    p.getUsuarioId(), // Podríamos hacer un JOIN para sacar el nombre, pero el ID sirve por ahora
+                    p.getEstadoEnvio(),
+                    String.format("%.2f", p.getTotal()),
+                    p.getResumenProductos() // Usamos el método que creamos antes
+            };
+            model.addRow(fila);
+        }
+
         JTable tabla = new JTable(model);
+        tabla.setRowHeight(25);
 
-        // --- EL SECRETO DE LOS ENCABEZADOS ---
-        // Creamos un ScrollPane EXCLUSIVO para la tabla.
-        // Esto garantiza que se vean los títulos de las columnas.
+        // Ajustar anchos de columnas específicos
+        tabla.getColumnModel().getColumn(0).setPreferredWidth(50);  // ID
+        tabla.getColumnModel().getColumn(1).setPreferredWidth(120); // Fecha
+        tabla.getColumnModel().getColumn(2).setPreferredWidth(80);  // Cliente
+        tabla.getColumnModel().getColumn(3).setPreferredWidth(100); // Estado
+        tabla.getColumnModel().getColumn(4).setPreferredWidth(100); // Total
+        tabla.getColumnModel().getColumn(5).setPreferredWidth(300); // Detalles (más ancho)
+
+        // 4. Scroll de la tabla
         JScrollPane scrollTabla = new JScrollPane(tabla);
-
-        // Opcional: Definir un tamaño preferido para que no ocupe todo o sea muy chica
-        scrollTabla.setPreferredSize(new Dimension(600, 200));
-
-        // Añadimos el Scroll de la tabla al panel de contenido
         panelContent.add(scrollTabla);
 
-        // --- SCROLL GENERAL DE LA VENTANA ---
-        // Si panelContent crece mucho, necesitamos un scroll externo
-        JScrollPane scrollGeneral = new JScrollPane(panelContent);
-        scrollGeneral.getVerticalScrollBar().setUnitIncrement(15);
-        scrollGeneral.setBorder(null);
-
-        // Añadimos el scroll general al centro de la ventana
-        panelVentanaAdmin.add(scrollGeneral, BorderLayout.CENTER);
+        // Refrescar visualmente
+        panelContent.revalidate();
+        panelContent.repaint();
     }
 
+    private void armarEstructuraPanel() {
+        // Layout principal
+        panelVentanaAdmin.setLayout(new BorderLayout());
+        if (panelHeader != null) {
+            panelVentanaAdmin.add(panelHeader, BorderLayout.NORTH);
+        }
+
+        // El panelContent será ahora un BorderLayout para que la tabla llene el espacio
+        panelContent.setLayout(new BorderLayout());
+        panelContent.setBackground(Color.WHITE);
+
+        // Borde interno para que no quede pegado
+        panelContent.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        // Scroll general (Opcional, si la tabla ya tiene scroll interno a veces no hace falta,
+        // pero lo dejamos por si agregas más cosas abajo)
+        panelVentanaAdmin.add(panelContent, BorderLayout.CENTER);
+    }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            // AQUI ESTABA EL ERROR:
-            // No creamos un 'new JFrame' genérico, instanciamos TU clase.
-            VentanaAdmin v = new VentanaAdmin();
-            v.setVisible(true);
-        });
+        SwingUtilities.invokeLater(() -> new VentanaAdmin().setVisible(true));
     }
 }

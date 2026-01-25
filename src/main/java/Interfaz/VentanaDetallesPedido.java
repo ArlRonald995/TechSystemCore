@@ -45,8 +45,29 @@ public class VentanaDetallesPedido extends JDialog {
 
         // Botón Cerrar
         JButton btnCerrar = new JButton("Cerrar");
+
+        // Estilo Dark/Moderno
+        btnCerrar.setBackground(new Color(50, 50, 50));
+        btnCerrar.setForeground(Color.WHITE);
+
+        // LAS 3 PROPIEDADES MÁGICAS:
+        btnCerrar.setOpaque(true);
+        btnCerrar.setBorderPainted(false);
+        btnCerrar.setFocusPainted(false);
+
+        btnCerrar.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        btnCerrar.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnCerrar.setPreferredSize(new Dimension(100, 35));
+
         btnCerrar.addActionListener(e -> dispose());
-        panel.add(btnCerrar, BorderLayout.SOUTH);
+
+        // Panel inferior para darle un poco de margen y que no quede pegado
+        JPanel panelSur = new JPanel();
+        panelSur.setBackground(Color.WHITE);
+        panelSur.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+        panelSur.add(btnCerrar);
+
+        panel.add(panelSur, BorderLayout.SOUTH);
 
         add(panel);
     }

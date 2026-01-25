@@ -214,7 +214,7 @@ public class GestorPedidos {
             return false;
         }
     }
-    // MÉTODO PARA EL DASHBOARD DEL ADMINISTRADOR (Ver todas las ventas)
+    // MÉTODO PARA EL DASHBOARD DEL ADMINISTRADOR (CORREGIDO)
     public List<Pedido> obtenerTodosLosPedidos() {
         List<Pedido> lista = new ArrayList<>();
         // Traemos todo, ordenado del más reciente al más antiguo
@@ -228,7 +228,7 @@ public class GestorPedidos {
              ResultSet rs = ps.executeQuery()) {
 
             while(rs.next()) {
-                // Reconstruimos el objeto Pedido
+                // 1. Reconstruimos la cabecera del Pedido
                 Pedido p = new Pedido(
                         rs.getInt("id"),
                         rs.getInt("usuario_id"),
@@ -237,13 +237,51 @@ public class GestorPedidos {
                         rs.getString("estado_envio"),
                         rs.getString("ubicacion_actual")
                 );
-                // Opcional: Podrías guardar el nombre del cliente en el objeto Pedido
-                // si modificas la clase Pedido para tener un campo "nombreClienteAux"
+
+                // 2. >>> EL CAMBIO CLAVE <<<
+                // Cargamos los productos de este pedido usando el método auxiliar
+                p.setDetalles(obtenerDetallesDePedido(p.getId()));
+
                 lista.add(p);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return lista;
+    }
+    public boolean enviarValoracion(int usuarioId, String skuProducto, int estrellas, String comentario) {
+        String sql = "INSERT INTO valoraciones (usuario_id, producto_sku, puntuacion, comentario, fecha) VALUES (?, ?, ?, ?, CURRENT_DATE)";
+
+        try (Connection con = Conexion.conectar();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, usuarioId);
+            ps.setString(2, skuProducto);
+            ps.setInt(3, estrellas);
+            ps.setString(4, comentario);
+
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // 6. VERIFICAR SI YA VALORÓ (Para desactivar el botón)
+    public boolean yaValoroProducto(int usuarioId, String skuProducto) {
+        String sql = "SELECT id FROM valoraciones WHERE usuario_id = ? AND producto_sku = ?";
+
+        try (Connection con = Conexion.conectar();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, usuarioId);
+            ps.setString(2, skuProducto);
+
+            ResultSet rs = ps.executeQuery();
+            return rs.next(); // Retorna true si ya existe una valoración
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

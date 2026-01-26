@@ -10,7 +10,5 @@ public class Sesion {
 
     public static void logout() {
         usuarioLogueado = null;
-        // Al hacer null, el "new Carrito()" del Cliente se pierde en el Limbo (Garbage Collector),
-        // cumpliendo tu deseo de que se borre al cerrar sesión.
     }
 }

@@ -6,26 +6,26 @@ import java.util.List;
 
 public class GestorPedidos {
 
-    // 1. MÉTODO MAESTRO PARA COMPRAR
+    // Metodo para comprar
     public boolean realizarCompra(Cliente cliente, IMetodoPago metodoPago) {
         CarritoCompra carrito = cliente.getCarrito();
         double total = carrito.calcularTotal();
 
         if (total <= 0) return false;
 
-        // A) Procesar pago
+        // Procesar pago
         if (!metodoPago.procesarPago(total)) {
             System.out.println("Pago rechazado.");
             return false;
         }
 
-        // B) Transacción en Base de Datos (Pedido + Detalles + Stock)
+        // Transacción en Base de Datos
         Connection con = null;
         try {
             con = Conexion.conectar();
             con.setAutoCommit(false); // ¡IMPORTANTE! Inicia transacción manual
 
-            // B.1) Insertar Cabecera del Pedido
+            // Insertar Cabecera del Pedido
             String sqlPedido = "INSERT INTO pedidos (usuario_id, total, estado_envio, ubicacion_actual, fecha_compra) VALUES (?, ?, 'En Bodega', 'Almacén Central', NOW()) RETURNING id";
             PreparedStatement psPedido = con.prepareStatement(sqlPedido);
             psPedido.setInt(1, cliente.getId());
@@ -35,7 +35,7 @@ public class GestorPedidos {
             if (!rs.next()) throw new SQLException("No se generó ID de pedido");
             int idPedido = rs.getInt(1);
 
-            // B.2) Insertar Detalles y Actualizar Stock
+            // Insertar Detalles y Actualizar Stock
             String sqlDetalle = "INSERT INTO detalle_pedidos (pedido_id, producto_sku, cantidad, precio_unitario) VALUES (?, ?, ?, ?)";
             String sqlStock = "UPDATE productostienda_raw SET stock = stock - ? WHERE sku = ?";
 
@@ -61,12 +61,12 @@ public class GestorPedidos {
             }
 
             con.commit(); // Confirmar cambios
-            System.out.println("✅ Pedido #" + idPedido + " creado exitosamente.");
+            System.out.println(" Pedido #" + idPedido + " creado exitosamente.");
 
-            // C) Vaciar carrito
+            // Vaciar carrito
             carrito.vaciar();
 
-            // D) Iniciar simulación de envío (Logística) en segundo plano
+            // Iniciar simulación de envío (Logística) en segundo plano
             iniciarSimulacionEnvio(idPedido,cliente.getDireccion());
 
             return true;
@@ -82,7 +82,7 @@ public class GestorPedidos {
         }
     }
 
-    // 2. SIMULACIÓN DE LOGÍSTICA (Hilo en 2do plano)
+    // SIMULACIÓN DE LOGÍSTICA
     private void iniciarSimulacionEnvio(int idPedido, String direccionCliente) {
         new Thread(() -> {
             try {
@@ -116,7 +116,7 @@ public class GestorPedidos {
         }
     }
 
-// 3. RECUPERAR PEDIDOS DE UN USUARIO (MODIFICADO para cargar detalles)
+// RECUPERAR PEDIDOS DE UN USUARIO
     public List<Pedido> obtenerPedidosPorUsuario(int usuarioId) {
         List<Pedido> lista = new ArrayList<>();
         String sql = "SELECT * FROM pedidos WHERE usuario_id = ? ORDER BY fecha_compra DESC";
@@ -136,8 +136,7 @@ public class GestorPedidos {
                         rs.getString("ubicacion_actual")
                 );
 
-                // --- AQUÍ ESTÁ EL CAMBIO CLAVE ---
-                // Ahora sí cargamos la lista de productos de este pedido
+                // Cargamos la lista de productos de este pedido
                 p.setDetalles(obtenerDetallesDePedido(p.getId()));
 
                 lista.add(p);
@@ -146,11 +145,9 @@ public class GestorPedidos {
         return lista;
     }
 
-    // 4. NUEVO MÉTODO AUXILIAR (Añádelo al final de la clase)
     private List<DetallePedido> obtenerDetallesDePedido(int pedidoId) {
         List<DetallePedido> detalles = new ArrayList<>();
-        // Hacemos un JOIN para obtener el NOMBRE del producto desde la tabla 'productostienda_raw'
-        // ya que en 'detalle_pedidos' solo guardaste el SKU.
+        // Hacemos un JOIN para obtener el NOMBRE del producto desde la tabla "productostienda_raw"
         String sql = "SELECT d.producto_sku, d.cantidad, d.precio_unitario, p.nombre " +
                 "FROM detalle_pedidos d " +
                 "JOIN productostienda_raw p ON d.producto_sku = p.sku " +
@@ -177,7 +174,7 @@ public class GestorPedidos {
         return detalles;
     }
 
-    // 5. GUARDAR VALORACIÓN (Reseña)
+    // GUARDAR VALORACIÓN (Reseña)
     public boolean agregarValoracion(Valoracion val) {
         String sql = "INSERT INTO valoraciones (usuario_id, producto_sku, puntuacion, comentario, fecha) VALUES (?, ?, ?, ?, CURRENT_DATE)";
         try (Connection con = Conexion.conectar();
@@ -206,7 +203,6 @@ public class GestorPedidos {
             ps.setString(2, skuProducto);
 
             try (ResultSet rs = ps.executeQuery()) {
-                // Si devuelve al menos una fila, significa que sí lo compró y ya le llegó
                 return rs.next();
             }
         } catch (SQLException e) {
@@ -214,7 +210,7 @@ public class GestorPedidos {
             return false;
         }
     }
-    // MÉTODO PARA EL DASHBOARD DEL ADMINISTRADOR (CORREGIDO)
+    // Metodo para la ventana del administrador
     public List<Pedido> obtenerTodosLosPedidos() {
         List<Pedido> lista = new ArrayList<>();
         // Traemos todo, ordenado del más reciente al más antiguo
@@ -228,7 +224,7 @@ public class GestorPedidos {
              ResultSet rs = ps.executeQuery()) {
 
             while(rs.next()) {
-                // 1. Reconstruimos la cabecera del Pedido
+                // Reconstruimos la cabecera del Pedido
                 Pedido p = new Pedido(
                         rs.getInt("id"),
                         rs.getInt("usuario_id"),
@@ -238,7 +234,6 @@ public class GestorPedidos {
                         rs.getString("ubicacion_actual")
                 );
 
-                // 2. >>> EL CAMBIO CLAVE <<<
                 // Cargamos los productos de este pedido usando el método auxiliar
                 p.setDetalles(obtenerDetallesDePedido(p.getId()));
 
@@ -267,7 +262,7 @@ public class GestorPedidos {
         }
     }
 
-    // 6. VERIFICAR SI YA VALORÓ (Para desactivar el botón)
+    // VERIFICAR SI EL USUARIO YA VALORÓ
     public boolean yaValoroProducto(int usuarioId, String skuProducto) {
         String sql = "SELECT id FROM valoraciones WHERE usuario_id = ? AND producto_sku = ?";
 

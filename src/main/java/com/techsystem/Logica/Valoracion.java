@@ -19,7 +19,6 @@ public class Valoracion {
         this.fecha = fecha;
     }
 
-    // Getters...
     public int getPuntuacion() { return puntuacion; }
     public String getComentario() { return comentario; }
     public String getProductoSku() { return productoSku; }

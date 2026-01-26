@@ -28,11 +28,11 @@ public class CarritoDeCompras extends JFrame {
 
         listaItemsGraficos = new ArrayList<>();
 
-        // 1. ESTRUCTURA PRINCIPAL
+        // ESTRUCTURA PRINCIPAL
         JPanel panelPrincipal = new JPanel(new BorderLayout());
         panelPrincipal.setBackground(Color.WHITE);
 
-        // --- HEADER ---
+        //  HEADER
         JPanel header = new JPanel(new FlowLayout(FlowLayout.LEFT));
         header.setBackground(new Color(50, 50, 50)); // Gris oscuro
         JLabel titulo = new JLabel("  Tu Carrito de Compras");
@@ -40,7 +40,7 @@ public class CarritoDeCompras extends JFrame {
         titulo.setFont(new Font("Segoe UI", Font.BOLD, 20));
         header.add(titulo);
 
-        // --- CUERPO (LISTA SCROLLABLE) ---
+        // CUERPO DE LA VENTANA
         panelItems = new JPanel();
         panelItems.setLayout(new BoxLayout(panelItems, BoxLayout.Y_AXIS)); // Lista vertical
         panelItems.setBackground(new Color(245, 245, 245)); // Gris muy claro
@@ -49,7 +49,7 @@ public class CarritoDeCompras extends JFrame {
         scroll.getVerticalScrollBar().setUnitIncrement(16);
         scroll.setBorder(null);
 
-        // --- FOOTER (TOTAL Y BOTÓN COMPRAR) ---
+        //BOTON PARA COMPRAR
         JPanel footer = new JPanel(new BorderLayout());
         footer.setBorder(new EmptyBorder(20, 30, 20, 30));
         footer.setBackground(Color.WHITE);
@@ -73,16 +73,16 @@ public class CarritoDeCompras extends JFrame {
         btnVolver.setPreferredSize(new Dimension(150, 50));
 
         btnPagar = new JButton("Finalizar Compra");
-        // Estilos
-// 1. BOTÓN PAGAR (Verde Sólido)
+
+
+//  BOTÓN PAGAR (Verde Sólido)
         btnPagar = new JButton("Finalizar Compra");
         btnPagar.setPreferredSize(new Dimension(200, 50));
         btnPagar.setFont(new Font("Segoe UI", Font.BOLD, 16));
 
-        btnPagar.setBackground(new Color(34, 139, 34)); // Verde Bosque
+        btnPagar.setBackground(new Color(86, 117, 221)); // Verde Bosque
         btnPagar.setForeground(Color.WHITE);            // Texto Blanco
 
-        // EL SECRETO PARA QUE SE VEA EL COLOR:
         btnPagar.setOpaque(true);
         btnPagar.setBorderPainted(false);
         btnPagar.setFocusPainted(false);
@@ -95,14 +95,14 @@ public class CarritoDeCompras extends JFrame {
         footer.add(lblTotalPagar, BorderLayout.WEST);
         footer.add(panelBotones, BorderLayout.EAST);
 
-        // --- ARMAR ---
+        //  ARMAR
         panelPrincipal.add(header, BorderLayout.NORTH);
         panelPrincipal.add(scroll, BorderLayout.CENTER);
         panelPrincipal.add(footer, BorderLayout.SOUTH);
 
         setContentPane(panelPrincipal);
 
-        // --- LÓGICA ---
+        // LÓGICA
         cargarItemsDelUsuario();
 
         // Acciones
@@ -112,15 +112,15 @@ public class CarritoDeCompras extends JFrame {
         });
 
         btnPagar.addActionListener(e -> {
-            // 1. Validar que el carrito no esté vacío antes de abrir el pago
+            // Validar que el carrito no esté vacío antes de abrir el pago
             Cliente c = (Cliente) Sesion.usuarioLogueado;
             if (c.getCarrito().getItems().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Tu carrito está vacío. Agrega productos primero.");
                 return;
             }
 
-            // 2. ABRIR TU CLASE PROCESO DE PAGO
-            // Pasamos 'this' (la ventana del carrito) para cerrarla si la compra sale bien
+            // ABRIR LA CLASE PROCESO DE PAGO
+            // Pasamos 'this'para cerrarla si la compra sale bien
             ProcesoDePago pago = new ProcesoDePago(this);
             pago.setVisible(true);
         });
@@ -171,7 +171,7 @@ public class CarritoDeCompras extends JFrame {
             }
         }
 
-        // Si hay items eliminados, los sacamos de la vista y del carrito lógico
+        // Si hay items eliminados, se saca de la vista y del carrito lógico
         for (ItemCarrito itemBorrado : paraBorrar) {
             panelItems.remove(itemBorrado);
             listaItemsGraficos.remove(itemBorrado);
@@ -204,7 +204,7 @@ public class CarritoDeCompras extends JFrame {
     }
 
 
-    // Main para probar visualmente (sin login dará error, pero para ver el diseño sirve)
+    // Main para probar visualmente
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new CarritoDeCompras().setVisible(true));
     }

@@ -25,7 +25,7 @@ public class CarritoCompra {
         items.add(new ItemCarrito(p, cantidad));
     }
 
-    // --- EL MÉTODO QUE FALTABA ---
+    // Metodo para eliminar productos
     public void eliminarProducto(Producto p) {
         // Usamos una función lambda para remover el item si el SKU coincide
         items.removeIf(item -> item.getProducto().getSku().equals(p.getSku()));
@@ -47,9 +47,9 @@ public class CarritoCompra {
         return items;
     }
 
-    // --- MÉTODO ADAPTADOR PARA LA INTERFAZ GRÁFICA ---
-    // La ventana 'CarritoDeCompras' espera un Map<Producto, Integer>.
-    // Este método convierte tu lista al formato que necesita la ventana.
+    // Metodo para adapatar la interfaz grafica
+    //La ventana "CarritoDeCompras" recibe un Map<Producto, Integer>.
+    // convierte la lista al formato que necesita la ventana.
     public Map<Producto, Integer> getProductos() {
         Map<Producto, Integer> mapa = new HashMap<>();
         for (ItemCarrito item : items) {

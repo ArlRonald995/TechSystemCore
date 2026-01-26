@@ -4,6 +4,7 @@ import com.techsystem.Logica.*; // Importar lógica necesaria
 
 import javax.swing.*;
 import java.awt.*;
+import java.net.URL;
 
 public class ProcesoDePago extends JFrame {
     private JPanel panelProcesoDePago;
@@ -37,15 +38,21 @@ public class ProcesoDePago extends JFrame {
         configurarInputs(TFnombreTarjeta, "Nombre en la tarjeta");
         configurarIconosPago();
 
+
         try {
             Estilos.LabelsBonitos2(LmetodoPago);
-        } catch (Exception e) { /* Ignorar si falla estilos */ }
+        } catch (Exception e) { }
 
-        // --- LÓGICA DEL BOTÓN FINALIZAR ---
+        // LÓGICA DEL BOTÓN FINALIZAR
         finalizarCompraButton.addActionListener(e -> procesarCompra());
     }
 
     private void procesarCompra() {
+        String numTarjeta = TFnumeroTarjeta.getText();
+        String fechaVenc = TFfechaVen.getText();
+        String cvv = TFcvv.getText();
+        String nombre = TFnombreTarjeta.getText();
+
         // 1. Validar que no sean los textos de ejemplo
         if (esInvalido(TFnumeroTarjeta, "Numero de tarjeta") ||
                 esInvalido(TFcvv, "CVV") ||
@@ -53,9 +60,63 @@ public class ProcesoDePago extends JFrame {
 
             JOptionPane.showMessageDialog(this, "Por favor completa todos los datos bancarios.", "Datos Incompletos", JOptionPane.WARNING_MESSAGE);
             return;
+
         }
 
-        // 2. Ejecutar Compra Real
+        //Validar que los datos sean correctos
+        //===============================================================
+
+        if(numTarjeta.length()!= 10 ){
+            JOptionPane.showMessageDialog(this,
+                    "El numero de tarjeta es invalido. " +
+                            "Por favor ingrese los 10 digitos que aparecen en la parte posterior de su tarjeta",
+                    "Advertencia",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (fechaVenc.length()!=5){
+            JOptionPane.showMessageDialog(this,
+                    "La fecha ingresada es invalida. Por favor guiese en el ejemplo dado",
+                    "Advertencia",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (cvv.length()!=3){
+            JOptionPane.showMessageDialog(this,
+                    "El codigo de verificacion (cvv) ingresado es incorrecto",
+                    "Advertencia",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        //==========================================
+
+        //Validar tipos de dato logicos
+        //=========================================
+        if(!numTarjeta.matches("\\d++") ){
+            JOptionPane.showMessageDialog(this,
+                    "El numero de tarjeta solo pueden ser numeros",
+                    "Advertencia",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (!cvv.matches("\\d++")){
+            JOptionPane.showMessageDialog(this,
+                    "El codigo de verificacion debe contener solo numeros",
+                    "Advertencia",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (!nombre.matches("[a-zA-Z\\\\s]+")){
+            JOptionPane.showMessageDialog(this,
+                    "El nombre solo puede tener letras",
+                    "Advertencia",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        //====================================
+
+
+        // Ejecutar Compra Real
         if (Sesion.usuarioLogueado instanceof Cliente) {
             Cliente cliente = (Cliente) Sesion.usuarioLogueado;
 
@@ -79,6 +140,7 @@ public class ProcesoDePago extends JFrame {
                 protected void done() {
                     try {
                         boolean exito = get();
+
                         if (exito) {
                             JOptionPane.showMessageDialog(rootPane,
                                     "¡Pago Aprobado!\nTu pedido ha sido enviado al almacén.",
@@ -113,22 +175,24 @@ public class ProcesoDePago extends JFrame {
         return tf.getText().trim().isEmpty() || tf.getText().equals(placeholder);
     }
 
+
     public void configurarIconosPago() {
         int anchoIcon = 70;
         int altoIcon = 25;
+
+        // Usamos "../" para salir de /imagenes/ y entrar en /imagenesTarjetas/, ya que no hay un metodo para mis iconos del metodo de pago :(
+        String carpeta = "../imagenesTarjetas/";
+
         try {
-            IconPayPal.setIcon(Estilos.redimensionarImagen("/imagenesTarjetas/payPal.png", anchoIcon, altoIcon));
-            IconAmerican.setIcon(Estilos.redimensionarImagen("/imagenesTarjetas/American.png", anchoIcon, altoIcon));
-            IconMastercard.setIcon(Estilos.redimensionarImagen("/imagenesTarjetas/Mastercard.png", anchoIcon, altoIcon));
-            IconVisa.setIcon(Estilos.redimensionarImagen("/imagenesTarjetas/Visa.png", anchoIcon, altoIcon));
+            // Corregimos la ruta con el truco del nivel superior
+
+            IconPayPal.setIcon(Estilos.redimensionarImagenIconos(carpeta + "payPal.png", anchoIcon, altoIcon));
+            IconAmerican.setIcon(Estilos.redimensionarImagenIconos(carpeta + "American.png", anchoIcon, altoIcon));
+            IconMastercard.setIcon(Estilos.redimensionarImagenIconos(carpeta + "Mastercard.png", anchoIcon, altoIcon));
+            IconVisa.setIcon(Estilos.redimensionarImagenIconos(carpeta + "Visa.png", anchoIcon, altoIcon));
+
         } catch (Exception e) {
             System.err.println("Error cargando iconos tarjetas: " + e.getMessage());
-        }
-
-        JLabel[] labels = {IconPayPal, IconAmerican, IconMastercard, IconVisa};
-        for (JLabel lbl : labels) {
-            lbl.setText("");
-            lbl.setHorizontalAlignment(SwingConstants.CENTER);
         }
     }
 
@@ -141,9 +205,10 @@ public class ProcesoDePago extends JFrame {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 if (textField.getText().equals(textoInformativo)) {
                     textField.setText("");
-                    textField.setForeground(Color.BLACK); // Mejor negro para que se lea
+                    textField.setForeground(Color.BLACK);
                 }
             }
+
             @Override
             public void focusLost(java.awt.event.FocusEvent evt) {
                 if (textField.getText().isEmpty()) {
@@ -154,3 +219,4 @@ public class ProcesoDePago extends JFrame {
         });
     }
 }
+

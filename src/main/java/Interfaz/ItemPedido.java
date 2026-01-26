@@ -34,7 +34,7 @@ public class ItemPedido extends JPanel {
         ));
         this.setMaximumSize(new Dimension(Integer.MAX_VALUE, 120));
 
-        // --- 1. IZQUIERDA (ID y Fecha) ---
+        //  IZQUIERDA (ID y Fecha)
         JPanel pIzq = new JPanel(new GridLayout(2, 1, 5, 5));
         pIzq.setOpaque(false);
         pIzq.setPreferredSize(new Dimension(140, 0));
@@ -50,7 +50,7 @@ public class ItemPedido extends JPanel {
         pIzq.add(lblId);
         pIzq.add(lblFecha);
 
-        // --- 2. CENTRO (Estado y Ubicación) ---
+        // CENTRO (Estado y Ubicación)
         JPanel pCentro = new JPanel(new GridLayout(2, 1, 5, 5));
         pCentro.setOpaque(false);
 
@@ -64,7 +64,7 @@ public class ItemPedido extends JPanel {
         pCentro.add(lblEstado);
         pCentro.add(lblUbicacion);
 
-        // --- 3. DERECHA (Total y Botones) ---
+        //  DERECHA (Total y Botones)
         // Usamos un panel para apilar el Precio arriba y los Botones abajo
         JPanel pDer = new JPanel(new BorderLayout(0, 8));
         pDer.setOpaque(false);
@@ -74,11 +74,11 @@ public class ItemPedido extends JPanel {
         lblTotal.setForeground(new Color(0, 100, 0)); // Verde dinero
         lblTotal.setHorizontalAlignment(SwingConstants.RIGHT);
 
-        // -- Panel de Botones (Detalles + Valorar) --
+        //  Panel de Botones (Detalles + Valorar)
         JPanel pBotones = new JPanel(new GridLayout(1, 2, 10, 0));
         pBotones.setOpaque(false);
 
-        // A) Botón Ver Detalles
+        // Botón Ver Detalles
         btnDetalles = new JButton("Ver Detalles");
         estilizarBoton(btnDetalles, new Color(230, 230, 230), Color.BLACK); // Gris claro
         btnDetalles.addActionListener(e -> {
@@ -86,7 +86,7 @@ public class ItemPedido extends JPanel {
             new VentanaDetallesPedido(parent, this.pedido).setVisible(true);
         });
 
-        // B) Botón Valorar
+        // Botón Valorar
         btnValorar = new JButton("Valorar");
         estilizarBoton(btnValorar, new Color(255, 193, 7), Color.BLACK); // Amarillo
         btnValorar.addActionListener(e -> {
@@ -110,13 +110,12 @@ public class ItemPedido extends JPanel {
         add(pDer, BorderLayout.EAST);
     }
 
-    // --- MÉTODO MÁGICO PARA ARREGLAR LOS BOTONES ---
+    // MÉTODO PARA ARREGLAR LOS BOTONES
     private void estilizarBoton(JButton btn, Color fondo, Color texto) {
         btn.setBackground(fondo);
         btn.setForeground(texto);
         btn.setFont(new Font("Segoe UI", Font.BOLD, 12));
 
-        // ESTAS 3 LÍNEAS QUITAN EL FONDO BLANCO FEO:
         btn.setOpaque(true);
         btn.setBorderPainted(false);
         btn.setFocusPainted(false);
@@ -132,7 +131,7 @@ public class ItemPedido extends JPanel {
         lblId.setText("Pedido #" + pedido.getId());
         lblFecha.setText(pedido.getFechaFormateada());
         lblTotal.setText(String.format("$ %.2f", pedido.getTotal()));
-        lblUbicacion.setText("📍 " + pedido.getUbicacionActual());
+        lblUbicacion.setText(" " + pedido.getUbicacionActual());
 
         // Colores según estado
         String estado = pedido.getEstadoEnvio();
@@ -141,7 +140,7 @@ public class ItemPedido extends JPanel {
         if (estado.equalsIgnoreCase("Entregado")) {
             lblEstado.setForeground(new Color(34, 139, 34)); // Verde
             btnValorar.setEnabled(true);
-            btnValorar.setText("⭐ Valorar");
+            btnValorar.setText(" Valorar");
             // Restaurar color amarillo si se habilitó
             btnValorar.setBackground(new Color(255, 193, 7));
         } else if (estado.equalsIgnoreCase("Enviado")) {

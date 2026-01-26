@@ -33,17 +33,18 @@ public class FormularioResena extends JDialog {
         panel.setBackground(Color.WHITE);
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        // --- ENCABEZADO ---
+        // ENCABEZADO
         JLabel lblTitulo = new JLabel("<html>Opina sobre: <br/><b>" + productoAValorar.getNombreProducto() + "</b></html>");
         lblTitulo.setFont(new Font("Segoe UI", Font.PLAIN, 16));
         lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
 
-        // --- FORMULARIO ---
+        // FORMULARIO
         JPanel form = new JPanel(new GridLayout(4, 1, 10, 5));
         form.setOpaque(false);
 
-        // Selector de Estrellas (Usamos unicode para que se vea bonito)
+        // Selector de Estrellas
         String[] opciones = {"Select...", "⭐ (1) Malo", "⭐⭐ (2) Regular", "⭐⭐⭐ (3) Bueno", "⭐⭐⭐⭐ (4) Muy Bueno", "⭐⭐⭐⭐⭐ (5) Excelente"};
+        //Las estrellitas las encontramos en internet Inge :( como en el anterior proyecto sjsj
         cmbEstrellas = new JComboBox<>(opciones);
         cmbEstrellas.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 14)); // Emoji font si es posible
 
@@ -66,12 +67,10 @@ public class FormularioResena extends JDialog {
         btnEnviar.setBackground(new Color(0, 102, 204)); // Azul
         btnEnviar.setForeground(Color.WHITE);            // Texto Blanco
 
-        // --- AGREGAR ESTAS LÍNEAS ---
         btnEnviar.setOpaque(true);
         btnEnviar.setBorderPainted(false);
         btnEnviar.setFocusPainted(false);
         btnEnviar.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        // ----------------------------
 
         btnEnviar.addActionListener(e -> enviar());
 
@@ -105,7 +104,7 @@ public class FormularioResena extends JDialog {
             if (exito) {
                 JOptionPane.showMessageDialog(this, "¡Gracias por tu opinión!");
                 dispose();
-                ventanaPadre.dispose(); // Cerramos la lista para obligar a recargar (y que se bloquee el botón)
+                ventanaPadre.dispose(); // Cerramos la lista para obligar a recargar
             } else {
                 JOptionPane.showMessageDialog(this, "Error al guardar.", "Error", JOptionPane.ERROR_MESSAGE);
             }

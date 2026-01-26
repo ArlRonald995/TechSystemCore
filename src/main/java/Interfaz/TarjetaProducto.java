@@ -5,7 +5,7 @@ import com.techsystem.Logica.Producto;
 import javax.swing.*;
 import java.awt.*;
 
-// La clase extiende JPanel para ser agregada al Grid del catálogo
+
 public class TarjetaProducto extends JPanel {
 
     // --- VARIABLES DEL DISEÑO ---
@@ -16,44 +16,43 @@ public class TarjetaProducto extends JPanel {
     private JLabel txtNombre;
     private JLabel lblEstrellas;
 
-    // --- VARIABLES DE LÓGICA ---
+    //  VARIABLES DE LÓGICA
     // Guardamos el objeto entero para poder enviarlo al carrito después
     private Producto productoCompleto;
 
     public TarjetaProducto() {
-        // 1. Configuración Básica
+        // Configuración Básica
         setLayout(new BorderLayout());
 
-        // AJUSTE DE TAMAÑO: Ancho 260, Alto 450 para que no se corte el botón
+        // AJUSTE DE TAMAÑO
         this.setPreferredSize(new Dimension(260, 450));
 
         // Agregamos el panel del diseño gráfico al centro
         add(panelTarjeta, BorderLayout.CENTER);
 
-        // 2. Estilos
+        // Estilos
         try {
             Estilos.hacerBotonRedondo(verDetallesButton);
         } catch (Exception e) {
-            // Ignorar si falla
+
         }
 
-        // 3. Acción del botón
+        // Acción del botón
         verDetallesButton.addActionListener(e -> mostrarDetalleProducto());
     }
 
-    /**
-     * Este método recibe el producto de la BD y llena la tarjeta visualmente.
-     */
+
+     // Este método recibe el producto de la BD y llena la tarjeta visualmente.
+
     public void configurarProducto(Producto p) {
-        // A) Guardamos el objeto completo (VITAL PARA EL CARRITO)
+        // Guardamos el objeto completo
         this.productoCompleto = p;
 
-        // B) Llenamos textos básicos
+        //  Llenamos textos básicos
         if (txtNombre != null) txtNombre.setText(p.getNombre());
         if (txtPrecio != null) txtPrecio.setText(String.format("$ %.2f", p.getPrecio()));
 
-        // ---------------------------------------------------------
-        // NUEVO: LÓGICA DE VALORACIONES (ESTRELLAS)
+        // LÓGICA DE VALORACIONES
         // ---------------------------------------------------------
         if (lblEstrellas != null) {
             com.techsystem.Logica.GestorProductos gestor = new com.techsystem.Logica.GestorProductos();
@@ -64,7 +63,7 @@ public class TarjetaProducto extends JPanel {
             lblEstrellas.setFont(new java.awt.Font("Segoe UI Emoji", java.awt.Font.PLAIN, 14));
             lblEstrellas.setHorizontalAlignment(SwingConstants.CENTER);
 
-            // >>> LO NUEVO: CAMBIAR EL CURSOR Y AGREGAR EL CLICK <<<
+            // CAMBIAR EL CURSOR Y AGREGAR EL CLICK
             lblEstrellas.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
             lblEstrellas.setToolTipText("Clic para leer los comentarios");
 
@@ -84,11 +83,11 @@ public class TarjetaProducto extends JPanel {
             });
         }
 
-        // C) ALGORITMO DE IMAGEN "FIT CENTER" (Mejorado)
+        // ALGORITMO DE IMAGEN "FIT CENTER"
         String ruta = "/imagenes/" + p.getRutaImagen();
 
         try {
-            // 1. Buscar imagen
+            // Buscar imagen
             java.net.URL url = getClass().getResource(ruta);
             if (url == null) url = getClass().getResource("/imagenes/Logo1.png");
 
@@ -96,14 +95,14 @@ public class TarjetaProducto extends JPanel {
                 ImageIcon iconoOriginal = new ImageIcon(url);
                 Image imgOriginal = iconoOriginal.getImage();
 
-                // 2. Definir tamaño máximo (dejando margen)
+                // Definir tamaño máximo
                 int anchoMaximo = 220;
                 int altoMaximo = 220;
 
                 int anchoReal = iconoOriginal.getIconWidth();
                 int altoReal = iconoOriginal.getIconHeight();
 
-                // 3. Matemática para mantener proporción (Aspect Ratio)
+                // Matemática para mantener proporción
                 double proporcionAncho = (double) anchoMaximo / anchoReal;
                 double proporcionAlto = (double) altoMaximo / altoReal;
 
@@ -113,10 +112,10 @@ public class TarjetaProducto extends JPanel {
                 int anchoFinal = (int) (anchoReal * proporcionFinal);
                 int altoFinal = (int) (altoReal * proporcionFinal);
 
-                // 4. Escalar con alta calidad
+                // Escalar con alta calidad
                 Image imgEscalada = imgOriginal.getScaledInstance(anchoFinal, altoFinal, Image.SCALE_SMOOTH);
 
-                // 5. Asignar al Label
+                // Asignar al Label
                 if (lblImagen != null) {
                     lblImagen.setIcon(new ImageIcon(imgEscalada));
                     lblImagen.setHorizontalAlignment(SwingConstants.CENTER);
@@ -130,9 +129,9 @@ public class TarjetaProducto extends JPanel {
         }
     }
 
-    /**
-     * Abre la ventana modal con los detalles.
-     */
+
+     //Abre la ventana modal con los detalles.
+
     private void mostrarDetalleProducto() {
         // Obtenemos la ventana padre (VentanaCatalogo)
         Window parentWindow = SwingUtilities.getWindowAncestor(this);
@@ -154,17 +153,17 @@ public class TarjetaProducto extends JPanel {
         StringBuilder sb = new StringBuilder();
         int estrellasLlenas = (int) Math.round(promedio);
 
-        // Dibujamos hasta 5 estrellas
+        // Dibujamos hasta 5 estrellas      //Los emojis son de google Inge se lo prometemos :(
         for (int i = 0; i < 5; i++) {
             if (i < estrellasLlenas) {
                 sb.append("⭐"); // Estrella llena
             } else {
-                sb.append("☆");  // Estrella vacía (opcional, si quieres que se vea el hueco)
+                sb.append("☆");  // Estrella vacía
             }
         }
         return sb.toString();
     }
-    // --- COMPONENTES PERSONALIZADOS (Bordes Redondos del Panel) ---
+    //  COMPONENTES PERSONALIZADOS
     private void createUIComponents() {
         panelTarjeta = new JPanel() {
             @Override

@@ -11,5 +11,4 @@ public class Administrador extends Usuario {
         return "VISTA_DASHBOARD_ADMIN";
     }
 
-    // Aquí podrías poner métodos exclusivos como generarReporte(), etc.
 }

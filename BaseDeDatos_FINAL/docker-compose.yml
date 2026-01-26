@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  base-datos-tienda:
+    image: postgres:15
+    container_name: db_tienda_equipo
+    restart: always
+    environment:
+      - POSTGRES_USER=AdminTienda
+      - POSTGRES_PASSWORD=admin123
+      - POSTGRES_DB=InventarioTienda
+    ports:
+      - "5432:5432"
+    volumes:
+      # Carpeta para que los cambios de tu amigo se guarden en su PC
+      - ./datos_db:/var/lib/postgresql/data
+      # Aquí es donde ocurre la magia: carga tu SQL al iniciar
+      - ./inicializar_bd.sql:/docker-entrypoint-initdb.d/init.sql

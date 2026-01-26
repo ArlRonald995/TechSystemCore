@@ -7,9 +7,7 @@ public class Tablet extends DispositivoElectronico implements IProductoConPantal
 
     // Atributos Exclusivos
     private boolean soportaStylus;
-    private String sistemaOperativo; // <--- AGREGADO
-
-    // (Eliminado 'tieneSimCard' porque usaremos el 'tiene5G' del padre)
+    private String sistemaOperativo;
 
     public Tablet() { super(); }
 
@@ -21,9 +19,9 @@ public class Tablet extends DispositivoElectronico implements IProductoConPantal
                   // Datos Pantalla
                   String res, double tam, String panel, int hz,
                   // Datos Propios Tablet
-                  boolean stylus, String os) { // <--- Nuevo parámetro OS
+                  boolean stylus, String os) {
 
-        // Pasamos 'tieneConectividadMovil' al campo 'tiene5G' del padre
+        // Pasamos "tieneConectividadMovil" al campo "tiene5G" del padre
         super(sku, nombre, descripcion, precio, stock, marca, rutaImagen, clase,
                 voltaje, consumo, garantia, almacenamiento, procesador, velocidad, wifi, bt, tieneConectividadMovil);
 
@@ -32,7 +30,7 @@ public class Tablet extends DispositivoElectronico implements IProductoConPantal
         this.sistemaOperativo = os;
     }
 
-    // --- Getters Nuevos ---
+    //  Getters Nuevos
     public boolean isSoportaStylus() { // Naming convention: booleanos suelen usar 'is'
         return soportaStylus;
     }
@@ -46,12 +44,12 @@ public class Tablet extends DispositivoElectronico implements IProductoConPantal
 
     @Override
     public String mostrarDetallesEspecificos() {
-        return "📱 TABLET " + marca + " (" + pantalla.getTamanoPulgadas() + "\")\n" +
-                "🤖 OS: " + sistemaOperativo + "\n" +
+        return " TABLET " + marca + " (" + pantalla.getTamanoPulgadas() + "\")\n" +
+                " OS: " + sistemaOperativo + "\n" +
                 mostrarDetallesPantalla() + "\n" +
-                "✏️ Stylus: " + (soportaStylus ? "Compatible" : "No soporta") + "\n" +
-                "📶 Conectividad: " + (tiene5G ? "WiFi + 4G/5G" : "Solo WiFi") + "\n" + // Usamos la variable heredada
-                "💾 " + capacidadAlmacenamientoGB + "GB | CPU: " + modeloProcesador + "\n" +
+                "️ Stylus: " + (soportaStylus ? "Compatible" : "No soporta") + "\n" +
+                " Conectividad: " + (tiene5G ? "WiFi + 4G/5G" : "Solo WiFi") + "\n" + // Usamos la variable heredada
+                " " + capacidadAlmacenamientoGB + "GB | CPU: " + modeloProcesador + "\n" +
                 "------------------------------\n" + descripcion;
     }
 }

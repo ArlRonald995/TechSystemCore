@@ -2,7 +2,7 @@ package com.techsystem.Logica;
 
 public abstract class Computador extends DispositivoElectronico {
 
-    // Atributos específicos de Computador (Pág. 13)
+    // Atributos específicos de Computador
     protected int memoriaRAMGB;
     protected String tipoAlmacenamiento; // "SSD", "HDD"
 
@@ -10,7 +10,6 @@ public abstract class Computador extends DispositivoElectronico {
         super();
     }
 
-    // Constructor que recibe TODO (Datos de Producto + Datos de Dispositivo + Datos de Computador)
     public Computador(String sku, String nombre, String descripcion, double precio, int stock,
                       String marca, String rutaImagen, String clase,
                       double voltaje, double consumo, int garantia, int almacenamiento,
@@ -28,7 +27,7 @@ public abstract class Computador extends DispositivoElectronico {
 
     @Override
     public String mostrarDetallesEspecificos() {
-        return "💻 COMPUTADOR " + marca + " " + nombre + "\n" +
+        return "COMPUTADOR " + marca + " " + nombre + "\n" +
                 "CPU: " + modeloProcesador + " (" + velocidadGHz + "GHz)\n" +
                 "RAM: " + memoriaRAMGB + "GB | Disco: " + capacidadAlmacenamientoGB + "GB " + tipoAlmacenamiento + "\n" +
                 "Conectividad: " + (tieneWifi ? "WiFi " : "") + (tieneBluetooth ? "BT " : "") + "\n" +

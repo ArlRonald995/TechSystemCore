@@ -20,13 +20,13 @@ public class Conexion {
         return con;
     }
 
-    // --- MAIN DE PRUEBA ---
+    // MAIN DE PRUEBA (Esta clase se ejecuta para probar si la conexion con la base de datos fue exitosa)
     public static void main(String[] args) {
         Connection test = conectar();
         if (test != null) {
-            System.out.println("✅ ¡CONEXIÓN EXITOSA! Java 25 está hablando con Docker.");
+            System.out.println("¡CONEXIÓN EXITOSA! Java 25 está hablando con Docker.");
         } else {
-            System.out.println("❌ FALLÓ LA CONEXIÓN.");
+            System.out.println("FALLÓ LA CONEXIÓN.");
         }
     }
 }

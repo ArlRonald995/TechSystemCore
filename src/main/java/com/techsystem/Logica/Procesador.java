@@ -31,10 +31,10 @@ public class Procesador extends Componente implements IProductoConProcesador {
 
     @Override
     public String mostrarDetallesEspecificos() {
-        return "🧠 PROCESADOR " + marca + " " + modeloProcesador + "\n" +
-                "🔧 Socket: " + socketCompatibilidad + "\n" +
-                "⚡ Núcleos: " + nucleos + " @ " + velocidadGHz + "GHz\n" +
-                "🔋 Consumo (TDP): " + consumoEnergetico + "W\n" + // Variable heredada de Componente
+        return " PROCESADOR " + marca + " " + modeloProcesador + "\n" +
+                " Socket: " + socketCompatibilidad + "\n" +
+                "Núcleos: " + nucleos + " @ " + velocidadGHz + "GHz\n" +
+                "Consumo (TDP): " + consumoEnergetico + "W\n" + // Variable heredada de Componente
                 "----------------\n" + descripcion;
     }
 }

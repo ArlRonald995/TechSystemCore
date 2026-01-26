@@ -16,7 +16,7 @@ public class Pedido {
 
     private List<DetallePedido> detalles;
 
-    // --- CONSTRUCTOR 1: Para LEER de la Base de Datos (Ya lo tenías) ---
+    // CONSTRUCTOR 1: Para LEER de la Base de Datos
     public Pedido(int id, int usuarioId, Timestamp fechaCompra, double total, String estado, String ubicacion) {
         this.id = id;
         this.usuarioId = usuarioId;
@@ -27,11 +27,11 @@ public class Pedido {
         this.detalles = new ArrayList<>();
     }
 
-    // --- CONSTRUCTOR 2: Para CREAR un pedido NUEVO (Desde el Carrito) ---
+    // CONSTRUCTOR Para crear un pedido nuevo
     public Pedido(int usuarioId, Map<Producto, Integer> carrito, double totalCalculado) {
         this.usuarioId = usuarioId;
         this.total = totalCalculado;
-        // La fecha la ponemos automática al momento de crear el objeto
+        // La fecha se ponemos automática al momento de crear el objeto
         this.fechaCompra = new Timestamp(System.currentTimeMillis());
         // Estado inicial por defecto
         this.estadoEnvio = "Enviado";
@@ -43,7 +43,7 @@ public class Pedido {
             Producto p = entry.getKey();
             int cantidad = entry.getValue();
 
-            // Usamos tu clase DetallePedido existente
+            // Usamos la clase DetallePedido existente
             this.detalles.add(new DetallePedido(
                     p.getSku(),
                     p.getNombre(),
@@ -53,7 +53,7 @@ public class Pedido {
         }
     }
 
-    // --- GETTERS Y SETTERS ---
+
     public int getId() { return id; }
     public void setId(int id) { this.id = id; } // Necesario para asignar el ID que genera SQL
     public int getUsuarioId() { return usuarioId; }
@@ -65,16 +65,16 @@ public class Pedido {
     public List<DetallePedido> getDetalles() { return detalles; }
     public void setDetalles(List<DetallePedido> detalles) { this.detalles = detalles; }
 
-    // --- MÉTODOS VISUALES (Para la tabla de Mis Pedidos) ---
+    //  MÉTODOS VISUALES Para la tabla de Mis Pedidos
 
-    // 1. Fecha legible (Ej: "25/01/2026 14:30")
+    // Fecha legible
     public String getFechaFormateada() {
         if (fechaCompra == null) return "-";
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         return sdf.format(fechaCompra);
     }
 
-    // 2. Resumen de productos (Ej: "1x Laptop, 2x Mouse...")
+    // Resumen de productos
     public String getResumenProductos() {
         if (detalles == null || detalles.isEmpty()) return "Cargando detalles...";
 

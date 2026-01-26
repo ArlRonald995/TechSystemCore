@@ -18,13 +18,15 @@ public class VentanaComentarios extends JDialog {
         JPanel panelPrincipal = new JPanel(new BorderLayout());
         panelPrincipal.setBackground(Color.WHITE);
 
-        // --- TÍTULO ---
+
+
+        // TÍTULO
         JLabel lblTitulo = new JLabel("Reseñas de Clientes");
         lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 20));
         lblTitulo.setBorder(new EmptyBorder(15, 20, 10, 20));
         panelPrincipal.add(lblTitulo, BorderLayout.NORTH);
 
-        // --- LISTA DE COMENTARIOS ---
+        //  LISTA DE COMENTARIOS
         JPanel panelLista = new JPanel();
         panelLista.setLayout(new BoxLayout(panelLista, BoxLayout.Y_AXIS));
         panelLista.setBackground(Color.WHITE);
@@ -39,8 +41,10 @@ public class VentanaComentarios extends JDialog {
         scroll.getVerticalScrollBar().setUnitIncrement(16);
         panelPrincipal.add(scroll, BorderLayout.CENTER);
 
-        // --- BOTÓN CERRAR ---
+        // BOTÓN CERRAR
         JButton btnCerrar = new JButton("Cerrar");
+        Estilos.hacerBotonRedondo(btnCerrar);
+
         btnCerrar.addActionListener(e -> dispose());
         JPanel pSur = new JPanel();
         pSur.setBackground(Color.WHITE);
@@ -65,7 +69,6 @@ public class VentanaComentarios extends JDialog {
         }
 
         for (String[] r : resenas) {
-            // r[0]=Nombre, r[1]=Puntos, r[2]=Comentario, r[3]=Fecha
 
             JPanel tarjeta = new JPanel(new BorderLayout(5, 5));
             tarjeta.setBackground(new Color(250, 250, 250));
@@ -98,7 +101,7 @@ public class VentanaComentarios extends JDialog {
             header.add(izq, BorderLayout.WEST);
             header.add(lblFecha, BorderLayout.EAST);
 
-            // Contenido: El comentario
+            //Comentario
             JTextArea txtComentario = new JTextArea(r[2]);
             txtComentario.setLineWrap(true);
             txtComentario.setWrapStyleWord(true);

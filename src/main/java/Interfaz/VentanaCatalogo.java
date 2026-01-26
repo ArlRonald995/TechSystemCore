@@ -13,15 +13,15 @@ public class VentanaCatalogo extends JFrame {
     // Componentes del .form
     private JPanel panelVentana1;
     private JPanel panelHeader;
-    private JPanel panelContent; // El contenedor de las tarjetas
+    private JPanel panelContent;
     private JLabel txtTienda;
 
     // Botones de Categorías (Filtros)
-    private JButton button1; // Sugerencia: "Ver Todo"
-    private JButton button2; // Sugerencia: "Laptops"
-    private JButton button3; // Sugerencia: "Celulares"
-    private JButton button4; // Sugerencia: "Monitores"
-    private JButton button5; // Sugerencia: "Componentes" / "Otros"
+    private JButton button1; //  "Ver Todo"
+    private JButton button2; //  "Laptops"
+    private JButton button3; // "Celulares"
+    private JButton button4; // "Monitores"
+    private JButton button5; //  "Componentes" / "Otros"
 
     private JButton carritoDeComprasButton;
     private JButton cerrarSesionButton;
@@ -43,8 +43,7 @@ public class VentanaCatalogo extends JFrame {
             new Pedidos().setVisible(true);
         });
 
-        // -------------------------------------------------------------
-        // CORRECCIÓN PANTALLA BLANCA: Cargar SOLO cuando la ventana esté lista
+        // PANTALLA BLANCA: Cargar SOLO cuando la ventana esté lista
         // -------------------------------------------------------------
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
@@ -56,15 +55,14 @@ public class VentanaCatalogo extends JFrame {
 
     }
     private void iniciarCargaConPantalla(String categoria) {
-        // 1. Mostrar pantalla de carga
+        // Mostrar pantalla de carga
         PantallaCarga loading = new PantallaCarga(this);
 
-        // 2. Crear un Hilo de trabajo (Worker)
+        // Crear un Hilo de trabajo (Worker)
         SwingWorker<Void, Void> worker = new SwingWorker<>() {
             @Override
             protected Void doInBackground() throws Exception {
-                // AQUÍ OCURRE EL TRABAJO PESADO (Backend)
-                // Mientras esto corre, la barrita de carga se mueve
+                // Barrita de carga
                 cargarCatalogoEnSegundoPlano(categoria);
                 return null;
             }
@@ -78,15 +76,14 @@ public class VentanaCatalogo extends JFrame {
             }
         };
 
-        // 3. Arrancar el hilo
+        // Arrancar el hilo
         worker.execute();
 
-        // 4. Mostrar el dialog (esto detiene el flujo visual hasta que loading.dispose() se llame)
+        // Mostrar el dialog
         loading.setVisible(true);
     }
     private void cargarCatalogoEnSegundoPlano(String categoria) {
-        // Limpiar panel (esto debe hacerse con cuidado en hilos, pero Swing lo tolera si es removeAll)
-        // Lo ideal es usar SwingUtilities.invokeLater para tocar la UI
+        // Limpiar panel
         SwingUtilities.invokeLater(() -> panelContent.removeAll());
 
         GestorProductos gestor = new GestorProductos();
@@ -105,42 +102,35 @@ public class VentanaCatalogo extends JFrame {
 
                 // Agregamos al panel VISUALMENTE
                 SwingUtilities.invokeLater(() -> panelContent.add(tarjeta));
-
-                // Pequeña pausa opcional para que la UI respire si son muchísimos (1ms)
                 try { Thread.sleep(1); } catch (Exception e) {}
             }
         }
     }
 
-    // ========================================================================
     // MÉTODOS DE LÓGICA DE NEGOCIO (BACKEND -> FRONTEND)
-    // ========================================================================
 
-    /**
-     * Este método borra lo que hay en pantalla y carga los productos desde la BD
-     * @param categoria La categoría a filtrar (ej: "Laptop", "Celular" o "TODO")
-     */
+     // Este método borra lo que hay en pantalla y carga los productos desde la BD
     private void cargarCatalogo(String categoria) {
-        // 1. Limpiar el panel para que no se acumulen las tarjetas viejas
+        // Limpiar el panel para que no se acumulen las tarjetas viejas
         panelContent.removeAll();
 
-        // 2. Conectar con el Gestor (Backend)
+        // Conectar con el Gestor (Backend)
         GestorProductos gestor = new GestorProductos();
         List<Producto> listaProductos = gestor.obtenerProductosPorCategoria(categoria);
 
-        // 3. Validar si hay resultados
+        // Validar si hay resultados
         if (listaProductos.isEmpty()) {
             JLabel lblVacio = new JLabel("No se encontraron productos en esta categoría.");
             lblVacio.setForeground(Color.GRAY);
             lblVacio.setFont(new Font("Arial", Font.BOLD, 18));
             panelContent.add(lblVacio);
         } else {
-            // 4. Crear una tarjeta por cada producto encontrado
+            // Crear una tarjeta por cada producto encontrado
             for (Producto p : listaProductos) {
-                // Instanciamos tu clase TarjetaProducto (que ahora es un JPanel)
+                // Instanciamos la clase TarjetaProducto
                 TarjetaProducto tarjeta = new TarjetaProducto();
 
-                // Le pasamos los datos reales del producto
+                // Pasamos los datos reales del producto
                 tarjeta.configurarProducto(p);
 
                 // La añadimos al grid
@@ -148,7 +138,7 @@ public class VentanaCatalogo extends JFrame {
             }
         }
 
-        // 5. IMPORTANTE: Refrescar visualmente el panel
+        //Refrescar visualmente el panel
         panelContent.revalidate();
         panelContent.repaint();
     }
@@ -172,14 +162,12 @@ public class VentanaCatalogo extends JFrame {
         button5.addActionListener(e -> iniciarCargaConPantalla("GRUPO_PERIFERICOS"));
     }
 
-    // ========================================================================
     // MÉTODOS DE CONFIGURACIÓN VISUAL
     // ========================================================================
 
     private void configurarVentana() {
         this.setContentPane(panelVentana1);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        // Sugerencia: Maximizar la ventana por defecto para ver bien el catálogo
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.setSize(1910, 1000); // Tamaño fallback
         this.setLocationRelativeTo(null);
@@ -204,7 +192,6 @@ public class VentanaCatalogo extends JFrame {
 
         // Configuración del Grid de Productos
         panelContent.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
-        // 0 filas (infinitas), 4 o 5 columnas dependiendo de qué tan grandes sean tus tarjetas
         panelContent.setLayout(new GridLayout(0, 3, 20, 20));
         panelContent.setBackground(Color.WHITE);
     }
@@ -229,9 +216,11 @@ public class VentanaCatalogo extends JFrame {
         Estilos.botonesBonitos(button5);
         Estilos.botonesBonitos2(carritoDeComprasButton);
         Estilos.botonesBonitos2(cerrarSesionButton);
+        Estilos.botonesBonitos2(pedidosButton);
+
     }
 
-    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>MAIN<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+ //MAIN para probar la ventanita
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             VentanaCatalogo frame = new VentanaCatalogo();

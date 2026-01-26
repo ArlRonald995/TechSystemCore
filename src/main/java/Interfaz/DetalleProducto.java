@@ -8,7 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class DetalleProducto extends JDialog {
-    // --- TUS VARIABLES DEL DISEÑO ---
+    // VARIABLES DEL DISEÑO
     private JLabel txtNombre;
     private JLabel txtPrecio;
     private JButton agregarAlCarritoButton;
@@ -26,7 +26,7 @@ public class DetalleProducto extends JDialog {
     private JButton skuButton;
     private JTextArea descripcionTextArea;
 
-    // --- VARIABLE LÓGICA ---
+    // VARIABLE LÓGICA
     private Producto productoActual;
 
     public DetalleProducto(JFrame parent) {
@@ -34,7 +34,7 @@ public class DetalleProducto extends JDialog {
         setContentPane(panelDetalles);
         getRootPane().setDefaultButton(regresarButton);
 
-        // 1. CORRECCIÓN TAMAÑO: Forzamos un tamaño grande y fijo
+        // Forzamos un tamaño grande y fijo
         this.setSize(900, 600);
         this.setMinimumSize(new Dimension(800, 500)); // Para que no la puedan hacer miniatura
         this.setLocationRelativeTo(parent); // Centrar sobre la ventana padre
@@ -127,28 +127,28 @@ public class DetalleProducto extends JDialog {
     }
 
     private void createUIComponents() {
-        // 2. CORRECCIÓN TEXT AREA
+        // CORRECCIÓN TEXT AREA
         descripcionTextArea = new JTextArea();
 
-        // A) Ajuste de línea (Párrafo)
+        // Ajuste de línea (Párrafo)
         descripcionTextArea.setLineWrap(true);
         descripcionTextArea.setWrapStyleWord(true);
 
-        // B) Solo Lectura (No modificable)
+        // Solo Lectura (No modificable)
         descripcionTextArea.setEditable(false);
         descripcionTextArea.setFocusable(false); // Para que no se pueda seleccionar ni aparezca el cursor
 
-        // C) Estética: Fondo igual al panel para que parezca transparente (o blanco si prefieres)
+        // Estética: Fondo igual al panel para que parezca transparente
         descripcionTextArea.setBackground(new Color(255, 255, 255)); // Blanco limpio
         descripcionTextArea.setFont(new Font("Segoe UI", Font.PLAIN, 14)); // Letra legible
 
-        // D) ALINEACIÓN VERTICAL (El truco del margen)
+        // ALINEACIÓN VERTICAL
         // Como JTextArea no tiene "Vertical Alignment Center", le ponemos un margen superior (Top)
         // grande para empujar el texto hacia el centro visualmente.
         // Insets(Arriba, Izquierda, Abajo, Derecha)
         descripcionTextArea.setMargin(new Insets(25, 10, 10, 10));
 
-        // Borde sutil para ver el área (Opcional, si no te gusta bórralo)
+        // Borde sutil para ver el área
         descripcionTextArea.setBorder(BorderFactory.createLineBorder(new Color(230,230,230)));
     }
 }

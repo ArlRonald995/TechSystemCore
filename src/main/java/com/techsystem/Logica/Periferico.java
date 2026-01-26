@@ -1,13 +1,12 @@
 package com.techsystem.Logica;
 
-// CAMBIO: Hereda de Producto, pero implementa la interfaz eléctrica aquí
 public abstract class Periferico extends Producto implements IProductoElectronico {
 
     // Atributos Propios de Periférico
     protected String tipoConexion; // "USB", "Bluetooth", "Wireless"
     protected boolean esGamer;
 
-    // Atributos de IProductoElectronico (Centralizados)
+    // Atributos de IProductoElectronico
     protected double voltajeOperacion;
     protected double consumoEnergetico;
     protected int garantiaMeses;
@@ -30,7 +29,7 @@ public abstract class Periferico extends Producto implements IProductoElectronic
         this.esGamer = gamer;
     }
     public String getTipoConexion() { return tipoConexion; }
-    // --- Implementación IProductoElectronico ---
+    //  Implementación IProductoElectronico
     @Override public double getVoltajeOperacion() { return voltajeOperacion; }
     @Override public double getConsumoEnergetico() { return consumoEnergetico; }
     @Override public int getGarantiaMeses() { return garantiaMeses; }

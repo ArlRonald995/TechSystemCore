@@ -28,11 +28,11 @@ public class MemoriaRam extends Componente {
 
     @Override
     public String mostrarDetallesEspecificos() {
-        return "💾 MEMORIA RAM " + tipoRAM + "\n" +
-                "📦 Capacidad: " + capacidadGB + "GB\n" +
-                "🚀 Velocidad: " + velocidadMHz + "MHz\n" +
-                "🔧 Formato: " + socketCompatibilidad + "\n" +
-                "⚡ Voltaje: " + voltajeOperacion + "V\n" +
+        return " MEMORIA RAM " + tipoRAM + "\n" +
+                " Capacidad: " + capacidadGB + "GB\n" +
+                " Velocidad: " + velocidadMHz + "MHz\n" +
+                " Formato: " + socketCompatibilidad + "\n" +
+                " Voltaje: " + voltajeOperacion + "V\n" +
                 "----------------\n" + descripcion;
     }
 }

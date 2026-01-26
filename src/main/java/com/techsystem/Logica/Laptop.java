@@ -6,11 +6,10 @@ public class Laptop extends Computador implements IProductoConPantalla {
     private SpecsPantalla pantalla;
 
     // Atributos Exclusivos
-    private boolean tieneWebcam; // <--- AGREGADO (Estaba olvidado)
+    private boolean tieneWebcam;
     private int capacidadBateriaWh;
-    private double pesoKg; // (Mantenido por si acaso)
+    private double pesoKg;
 
-    // (ELIMINADO: tieneTecladoRetroiluminado)
 
     public Laptop() { super(); }
 
@@ -24,7 +23,7 @@ public class Laptop extends Computador implements IProductoConPantalla {
                   // Datos Pantalla
                   String res, double tam, String panel, int hz,
                   // Datos Propios Laptop
-                  boolean webcam, int bateriaWh, double peso) { // <--- Nuevo orden
+                  boolean webcam, int bateriaWh, double peso) {
 
         super(sku, nombre, descripcion, precio, stock, marca, rutaImagen, clase,
                 voltaje, consumo, garantia, almacenamiento, procesador, velocidad, wifi, bt, tieneConectividadMovil,
@@ -44,12 +43,12 @@ public class Laptop extends Computador implements IProductoConPantalla {
 
     @Override
     public String mostrarDetallesEspecificos() {
-        return "💻 LAPTOP " + marca + "\n" +
+        return " LAPTOP " + marca + "\n" +
                 mostrarDetallesPantalla() + "\n" +
-                "📷 Webcam: " + (tieneWebcam ? "SÍ" : "NO") + "\n" + // <--- Se muestra aquí
-                "⚙️ CPU: " + modeloProcesador + " | RAM: " + memoriaRAMGB + "GB\n" +
-                "💾 Disco: " + capacidadAlmacenamientoGB + "GB " + tipoAlmacenamiento + "\n" +
-                "🔋 Batería: " + capacidadBateriaWh + "Wh | Peso: " + pesoKg + "kg\n" +
+                " Webcam: " + (tieneWebcam ? "SÍ" : "NO") + "\n" + // <--- Se muestra aquí
+                "⚙ CPU: " + modeloProcesador + " | RAM: " + memoriaRAMGB + "GB\n" +
+                " Disco: " + capacidadAlmacenamientoGB + "GB " + tipoAlmacenamiento + "\n" +
+                " Batería: " + capacidadBateriaWh + "Wh | Peso: " + pesoKg + "kg\n" +
                 "------------------------------\n" +
                 descripcion;
     }

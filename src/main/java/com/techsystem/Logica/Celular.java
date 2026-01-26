@@ -5,7 +5,7 @@ public class Celular extends DispositivoElectronico implements IProductoConPanta
     // Composición: El celular "tiene una" pantalla
     private SpecsPantalla pantalla;
 
-    // Atributos exclusivos de celular (ELIMINADO tiene5G porque ya lo hereda)
+    // Atributos exclusivos de celular
     private int camaraPrincipalMP;
     private String sistemaOperativo; // <--- NUEVO ATRIBUTO
 
@@ -21,7 +21,7 @@ public class Celular extends DispositivoElectronico implements IProductoConPanta
                    // Datos para crear el objeto Pantalla
                    String resPantalla, double tamPantalla, String tipoPanel, int hzPantalla) {
 
-        // Pasamos 'cincoG' al padre DispositivoElectronico
+        // Pasamos "cincoG" al padre DispositivoElectronico
         super(sku, nombre, descripcion, precio, stock, marca, rutaImagen, clase,
                 voltaje, consumo, garantia, almacenamiento, procesador, velocidad, wifi, bt, cincoG);
 
@@ -32,11 +32,10 @@ public class Celular extends DispositivoElectronico implements IProductoConPanta
         this.pantalla = new SpecsPantalla(resPantalla, tamPantalla, tipoPanel, hzPantalla);
     }
 
-    // --- Getters Propios ---
     public String getSistemaOperativo() { return sistemaOperativo; }
     public int getCamaraPrincipalMP() { return camaraPrincipalMP; }
 
-    // --- Implementación de IProductoConPantalla ---
+    // Implementación de IProductoConPantalla
     @Override
     public SpecsPantalla getPantalla() {
         return this.pantalla;
@@ -44,11 +43,11 @@ public class Celular extends DispositivoElectronico implements IProductoConPanta
 
     @Override
     public String mostrarDetallesEspecificos() {
-        return "📱 SMARTPHONE " + marca + " " + nombre + "\n" +
-                "🤖 OS: " + sistemaOperativo + "\n" + // Mostramos el OS
-                "📸 Cámara: " + camaraPrincipalMP + "MP\n" +
+        return " SMARTPHONE " + marca + " " + nombre + "\n" +
+                " OS: " + sistemaOperativo + "\n" + // Mostramos el OS
+                " Cámara: " + camaraPrincipalMP + "MP\n" +
                 mostrarDetallesPantalla() + "\n" +
-                "📡 5G: " + (tiene5G ? "SÍ" : "NO") + "\n" + // Usamos la variable heredada
+                " 5G: " + (tiene5G ? "SÍ" : "NO") + "\n" + // Usamos la variable heredada
                 "CPU: " + modeloProcesador + " | Almacenamiento: " + capacidadAlmacenamientoGB + "GB\n" +
                 "------------------------------\n" +
                 descripcion;

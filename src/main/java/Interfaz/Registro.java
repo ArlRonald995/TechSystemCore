@@ -4,11 +4,11 @@ import com.techsystem.Logica.GestorUsuarios;
 import javax.swing.*;
 
 public class Registro extends JFrame {
-    // Componentes del .form (Mantenemos tus nombres para no romper el diseño)
+    // Componentes del .form
     private JPanel panelRegistro;
     private JTextField txtNombre; // Nombre
     private JTextField txtEmail;// Email
-    private JTextField txtContrasena; // Contraseña (Debería ser JPasswordField idealmente)
+    private JTextField txtContrasena; // Contraseña
     private JTextField txtDireccion;
 
     private JButton registreseButton;
@@ -24,32 +24,31 @@ public class Registro extends JFrame {
         this.setContentPane(scroll);
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setLocationRelativeTo(null);
         this.pack(); // Ajusta tamaño al contenido
+        this.setLocationRelativeTo(null);
 
         // Aplicar estilos
         configuracionBotones();
 
-        // --- ACCIÓN: REGISTRARSE ---
+        //  ACCIÓN: REGISTRARSE                                 //Tixi deja de poner los comentarios en mayuscula >:(
         registreseButton.addActionListener(e -> {
             procesarRegistro();
         });
 
-        // --- ACCIÓN: CANCELAR ---
+        //  ACCIÓN: CANCELAR
         cancelarButton.addActionListener(e -> {
             regresarLogin();
         });
     }
 
     private void procesarRegistro() {
-        // 1. Mapear los textField a variables con sentido
-        // Verifica que este orden coincida con tu diseño visual (arriba a abajo)
+        // Mapear los textField a variables con sentido
         String nombre = txtNombre.getText().trim();
         String email = txtEmail.getText().trim();
         String password = txtContrasena.getText().trim();
         String direccion = txtDireccion.getText().trim();
 
-        // 2. Validaciones básicas
+        // Validaciones básicas
         if (nombre.isEmpty() || email.isEmpty() || password.isEmpty() || direccion.isEmpty()) {
             JOptionPane.showMessageDialog(this,
                     "Por favor llene los campos obligatorios (Nombre, Email, Pass, Dirección).",
@@ -58,7 +57,7 @@ public class Registro extends JFrame {
             return;
         }
 
-        // 3. Conexión con Base de Datos
+        // Conexión con Base de Datos
         GestorUsuarios gestor = new GestorUsuarios();
         boolean exito = gestor.registrarCliente(nombre, email, password, direccion);
 
@@ -87,7 +86,6 @@ public class Registro extends JFrame {
     private void regresarLogin() {
         InicioDeSesion login = new InicioDeSesion();
         login.setVisible(true);
-        // login.setLocationRelativeTo(null); // No suele ser necesario si el login ya se centra en su constructor
         this.dispose();
     }
 

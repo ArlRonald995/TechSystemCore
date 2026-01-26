@@ -1,12 +1,11 @@
 package com.techsystem.Logica;
 
-// CORRECCIÓN DEFINITIVA: Hereda de Producto, pero centraliza la lógica eléctrica aquí.
 public abstract class Componente extends Producto implements IProductoElectronico {
 
     // Atributos Componente
     protected String socketCompatibilidad;
 
-    // Atributos de IProductoElectronico (Centralizados aquí)
+    // Atributos de IProductoElectronico
     protected double voltajeOperacion;
     protected double consumoEnergetico;
     protected int garantiaMeses;
@@ -28,8 +27,7 @@ public abstract class Componente extends Producto implements IProductoElectronic
         this.socketCompatibilidad = socket;
     }
 
-    // --- Implementación ÚNICA de IProductoElectronico ---
-    // Así los hijos (RAM, CPU, Disco) no tienen que volver a escribir esto.
+    // Implementación de IProductoElectronico
     @Override public double getVoltajeOperacion() { return voltajeOperacion; }
     @Override public double getConsumoEnergetico() { return consumoEnergetico; }
     @Override public int getGarantiaMeses() { return garantiaMeses; }

@@ -36,7 +36,6 @@ public abstract class Producto implements IProductoInventariable {
         if(stock >= cantidad) this.stock -= cantidad;
     }
 
-    // Getters extra
     public String getNombre() { return nombre; }
     public String getDescripcion() { return descripcion; }
     public String getMarca() { return marca; }

@@ -50,7 +50,7 @@ public abstract class DispositivoElectronico extends Producto
     // Método común para mostrar info técnica (Pág. 10)
     @Override
     public void mostrarInformacionElectronica() {
-        System.out.println("⚡ Info Eléctrica: " + voltajeOperacion + "V, " + consumoEnergetico + "W");
-        System.out.println("🛡️ Garantía: " + garantiaMeses + " meses");
+        System.out.println(" Info Eléctrica: " + voltajeOperacion + "V, " + consumoEnergetico + "W");
+        System.out.println(" Garantía: " + garantiaMeses + " meses");
     }
 }

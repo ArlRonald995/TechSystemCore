@@ -32,9 +32,9 @@ public class ItemCarrito extends JPanel {
                 BorderFactory.createEmptyBorder(10, 10, 10, 10)
         ));
         setOpaque(false);
-        setMaximumSize(new Dimension(Integer.MAX_VALUE, 120)); // Altura fija bonita
+        setMaximumSize(new Dimension(Integer.MAX_VALUE, 120)); // Altura fija
 
-        // --- 1. IZQUIERDA: IMAGEN ---
+        // IZQUIERDA: IMAGEN
         JPanel panelIzq = new JPanel(new FlowLayout(FlowLayout.LEFT));
         panelIzq.setOpaque(false);
 
@@ -42,7 +42,7 @@ public class ItemCarrito extends JPanel {
         cargarImagen(lblImg, producto.getRutaImagen());
         panelIzq.add(lblImg);
 
-        // --- 2. CENTRO: DATOS ---
+        // CENTRO: DATOS
         JPanel panelCentro = new JPanel();
         panelCentro.setLayout(new BoxLayout(panelCentro, BoxLayout.Y_AXIS));
         panelCentro.setOpaque(false);
@@ -64,7 +64,7 @@ public class ItemCarrito extends JPanel {
         panelCentro.add(Box.createVerticalStrut(5));
         panelCentro.add(lblSubtotal);
 
-        // --- 3. DERECHA: CONTROLES ---
+        // DERECHA: CONTROLES
         JPanel panelDer = new JPanel();
         panelDer.setLayout(new BoxLayout(panelDer, BoxLayout.Y_AXIS));
         panelDer.setOpaque(false);
@@ -114,12 +114,11 @@ public class ItemCarrito extends JPanel {
         btnEliminar.setForeground(Color.WHITE);
         btnEliminar.setFont(new Font("Segoe UI", Font.BOLD, 12));
 
-        // ESTAS 3 LÍNEAS SON EL SECRETO:
         btnEliminar.setFocusPainted(false);  // Quita el recuadro punteado al hacer clic
         btnEliminar.setBorderPainted(false); // Quita el borde 3D/Gris feo
         btnEliminar.setOpaque(true);         // Obliga a pintar el fondo rojo
 
-        // (Opcional) Cursor de mano al pasar por encima
+        // Cursor de mano al pasar por encima
         btnEliminar.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnEliminar.addActionListener(e -> {
             // Lógica especial: seteamos cantidad a 0 para que el padre sepa que debe borrarlo
@@ -130,7 +129,7 @@ public class ItemCarrito extends JPanel {
         panelDer.add(panelBtns);
         panelDer.add(btnEliminar);
 
-        // --- AGREGAR AL LAYOUT ---
+        // AGREGAR AL LAYOUT
         add(panelIzq, BorderLayout.WEST);
         add(panelCentro, BorderLayout.CENTER);
         add(panelDer, BorderLayout.EAST);
@@ -142,7 +141,6 @@ public class ItemCarrito extends JPanel {
     }
 
     private void cargarImagen(JLabel lbl, String ruta) {
-        // Algoritmo Fit Center Miniatura (80x80)
         try {
             java.net.URL url = getClass().getResource("/imagenes/" + ruta);
             if (url == null) url = getClass().getResource("/imagenes/Logo1.png");

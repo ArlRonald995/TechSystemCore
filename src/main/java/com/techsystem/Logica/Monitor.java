@@ -30,11 +30,11 @@ public class Monitor extends Periferico implements IProductoConPantalla {
 
     @Override
     public String mostrarDetallesEspecificos() {
-        return "🖥️ MONITOR " + (esGamer ? "GAMING " : "") + (esCurvo ? "CURVO " : "PLANO ") + marca + "\n" +
+        return " MONITOR " + (esGamer ? "GAMING " : "") + (esCurvo ? "CURVO " : "PLANO ") + marca + "\n" +
                 mostrarDetallesPantalla() + "\n" +
-                "🔌 Conexión: " + tipoConexion + "\n" +
-                "🔊 Altavoces: " + (tieneAltavoces ? "SÍ" : "NO") + "\n" +
-                "⚡ Consumo: " + consumoEnergetico + "W\n" + // Dato heredado
+                " Conexión: " + tipoConexion + "\n" +
+                " Altavoces: " + (tieneAltavoces ? "SÍ" : "NO") + "\n" +
+                " Consumo: " + consumoEnergetico + "W\n" + // Dato heredado
                 "------------------------------\n" +
                 descripcion;
     }

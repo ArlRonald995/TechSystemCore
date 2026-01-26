@@ -65,7 +65,7 @@ public class VentanaValorarPedido extends JDialog {
             boolean yaCalificado = gestor.yaValoroProducto(userId, det.getSkuProducto());
 
             if (yaCalificado) {
-                btnAccion.setText("✅ Listo");
+                btnAccion.setText("✅ Listo");     //Emoji de google Inge :( sjsj
                 btnAccion.setEnabled(false);
                 btnAccion.setBackground(new Color(240, 240, 240));
             } else {

@@ -31,7 +31,7 @@ public class SmartWatch extends DispositivoElectronico implements IProductoConPa
         this.sensores = listaSensores;
     }
 
-    // --- Getter Nuevo ---
+
     public String getSensores() { return sensores; }
 
     @Override
@@ -39,12 +39,12 @@ public class SmartWatch extends DispositivoElectronico implements IProductoConPa
 
     @Override
     public String mostrarDetallesEspecificos() {
-        return "⌚ SMARTWATCH " + marca + "\n" +
+        return " SMARTWATCH " + marca + "\n" +
                 mostrarDetallesPantalla() + "\n" +
-                "❤️ Sensores: " + sensores + "\n" + // <--- Se muestra aquí
-                "💧 Resistente al agua: " + (resistenteAgua ? "SÍ" : "NO") + "\n" +
-                "🔗 Correa: " + materialCorrea + "\n" +
-                "📡 Conectividad: " + (tieneBluetooth ? "BT " : "") + (tieneWifi ? "WiFi " : "") + (tiene5G ? "LTE" : "") + "\n" +
+                " Sensores: " + sensores + "\n" +
+                " Resistente al agua: " + (resistenteAgua ? "SÍ" : "NO") + "\n" +
+                " Correa: " + materialCorrea + "\n" +
+                " Conectividad: " + (tieneBluetooth ? "BT " : "") + (tieneWifi ? "WiFi " : "") + (tiene5G ? "LTE" : "") + "\n" +
                 "------------------------------\n" + descripcion;
     }
 }

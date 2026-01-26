@@ -3,9 +3,11 @@
   <grid id="27dc6" binding="panelRegistro" layout-manager="GridLayoutManager" row-count="11" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="20" left="30" bottom="20" right="30"/>
     <constraints>
-      <xy x="101" y="20" width="419" height="410"/>
+      <xy x="101" y="20" width="419" height="468"/>
     </constraints>
-    <properties/>
+    <properties>
+      <preferredSize width="300" height="400"/>
+    </properties>
     <border type="none"/>
     <children>
       <component id="12d4c" class="javax.swing.JLabel">
@@ -22,22 +24,16 @@
           <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <font name="Britannic Bold" size="16" style="0"/>
           <text value="Contraseña:"/>
         </properties>
-      </component>
-      <component id="54d29" class="javax.swing.JTextField" binding="txtContrasena">
-        <constraints>
-          <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-            <preferred-size width="150" height="-1"/>
-          </grid>
-        </constraints>
-        <properties/>
       </component>
       <component id="92b1" class="javax.swing.JLabel">
         <constraints>
           <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <font name="Britannic Bold" size="16" style="0"/>
           <text value="Nombres y Apellidos"/>
         </properties>
       </component>
@@ -47,13 +43,16 @@
             <preferred-size width="150" height="-1"/>
           </grid>
         </constraints>
-        <properties/>
+        <properties>
+          <font name="DialogInput" size="14" style="0"/>
+        </properties>
       </component>
       <component id="a5057" class="javax.swing.JLabel">
         <constraints>
           <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <font name="Britannic Bold" size="16" style="0"/>
           <text value="Dirección:"/>
         </properties>
       </component>
@@ -63,7 +62,9 @@
             <preferred-size width="150" height="-1"/>
           </grid>
         </constraints>
-        <properties/>
+        <properties>
+          <font name="DialogInput" size="14" style="0"/>
+        </properties>
       </component>
       <component id="c22dd" class="javax.swing.JButton" binding="registreseButton">
         <constraints>
@@ -86,6 +87,8 @@
           <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <enabled value="true"/>
+          <font name="Britannic Bold" size="16" style="0"/>
           <text value="Email"/>
         </properties>
       </component>
@@ -95,7 +98,19 @@
             <preferred-size width="150" height="-1"/>
           </grid>
         </constraints>
-        <properties/>
+        <properties>
+          <font name="DialogInput" size="14" style="0"/>
+        </properties>
+      </component>
+      <component id="b5f33" class="javax.swing.JPasswordField" binding="txtContrasena">
+        <constraints>
+          <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="-1"/>
+          </grid>
+        </constraints>
+        <properties>
+          <font size="16"/>
+        </properties>
       </component>
     </children>
   </grid>

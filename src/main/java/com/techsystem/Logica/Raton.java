@@ -25,10 +25,10 @@ public class Raton extends Periferico {
 
     @Override
     public String mostrarDetallesEspecificos() {
-        return "🖱️ RATÓN " + marca + "\n" +
-                "🎯 Precisión: " + dpiMaximo + " DPI\n" +
-                "🔘 Botones: " + botonesProgramables + "\n" +
-                "🔌 Conexión: " + tipoConexion + "\n" +
+        return "RATÓN " + marca + "\n" +
+                "Precisión: " + dpiMaximo + " DPI\n" +
+                "Botones: " + botonesProgramables + "\n" +
+                "Conexión: " + tipoConexion + "\n" +
                 "----------------\n" + descripcion;
     }
 }

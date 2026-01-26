@@ -23,10 +23,10 @@ public class Teclado extends Periferico {
 
     @Override
     public String mostrarDetallesEspecificos() {
-        return "⌨️ TECLADO " + (esGamer ? "GAMER" : "ESTÁNDAR") + "\n" +
-                "🔌 Conexión: " + tipoConexion + "\n" +
-                "⚙️ Mecanismo: " + tipoMecanismo + "\n" +
-                "📏 Formato: " + (esRGB ? "Es RGB" : "No es RGB") + "\n" +
+        return " TECLADO " + (esGamer ? "GAMER" : "ESTÁNDAR") + "\n" +
+                " Conexión: " + tipoConexion + "\n" +
+                "️ Mecanismo: " + tipoMecanismo + "\n" +
+                " Formato: " + (esRGB ? "Es RGB" : "No es RGB") + "\n" +
                 "----------------\n" + descripcion;
     }
 }

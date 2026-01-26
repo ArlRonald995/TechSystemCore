@@ -14,12 +14,12 @@ public class PantallaCarga extends JDialog {
         panel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
         panel.setBackground(Color.WHITE);
 
-        // Mensaje y Gif de carga (si tuvieras) o solo texto
+        // Mensaje y Gif de carga
         JLabel lblMensaje = new JLabel("Cargando catálogo, por favor espere...", SwingConstants.CENTER);
         lblMensaje.setFont(new Font("Segoe UI", Font.BOLD, 14));
         lblMensaje.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        // Barra de progreso indeterminada (se mueve de lado a lado)
+        // Barra de progreso indeterminada
         JProgressBar barra = new JProgressBar();
         barra.setIndeterminate(true);
         barra.setForeground(new Color(0, 102, 204)); // Azul bonito

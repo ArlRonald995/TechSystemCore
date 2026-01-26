@@ -22,14 +22,14 @@ public class VentanaAdmin extends JFrame {
         super("Administración - TechSystem");
 
         this.setContentPane(panelVentanaAdmin);
-        this.setSize(900, 600); // Un poco más ancha para ver bien los datos
+        this.setSize(900, 600);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // 1. Armar estructura
+        //  Armar estructura
         armarEstructuraPanel();
 
-        // 2. Estilos
+        // Estilos
         try {
             Estilos.botonesBonitos(ADMINbutton); // Este botón servirá para REFRESCAR la tabla
             ADMINbutton.setText("🔄 Actualizar Tabla");
@@ -38,10 +38,10 @@ public class VentanaAdmin extends JFrame {
             Estilos.botonesBonitos2(agregarProductoButton);
         } catch (Exception e) {}
 
-        // 3. Cargar datos reales al iniciar
+        //  Cargar datos reales al iniciar
         cargarTablaPedidos();
 
-        // --- LISTENERS ---
+        // LISTENERS
         agregarProductoButton.addActionListener(e -> abrirAgregarProducto());
 
         cerrarSesionButton.addActionListener(e -> {
@@ -50,7 +50,7 @@ public class VentanaAdmin extends JFrame {
             this.dispose();
         });
 
-        // Botón del header (antes ADMINbutton) ahora refresca la lista
+        // Botón del header  ahora refresca la lista
         ADMINbutton.addActionListener(e -> cargarTablaPedidos());
     }
 
@@ -63,10 +63,10 @@ public class VentanaAdmin extends JFrame {
     private void cargarTablaPedidos() {
         panelContent.removeAll(); // Limpiamos la tabla anterior
 
-        // 1. Definir columnas
+        //  Definir columnas
         String[] columnas = {"ID", "Fecha", "Cliente ID", "Estado", "Total ($)", "Detalles"};
 
-        // 2. Modelo de tabla no editable
+        //  Modelo de tabla no editable
         DefaultTableModel model = new DefaultTableModel(columnas, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -74,7 +74,7 @@ public class VentanaAdmin extends JFrame {
             }
         };
 
-        // 3. Obtener datos de la BD
+        // Obtener datos de la BD
         GestorPedidos gestor = new GestorPedidos();
         List<Pedido> listaPedidos = gestor.obtenerTodosLosPedidos();
 
@@ -82,10 +82,10 @@ public class VentanaAdmin extends JFrame {
             Object[] fila = {
                     p.getId(),
                     p.getFechaFormateada(),
-                    p.getUsuarioId(), // Podríamos hacer un JOIN para sacar el nombre, pero el ID sirve por ahora
+                    p.getUsuarioId(),
                     p.getEstadoEnvio(),
                     String.format("%.2f", p.getTotal()),
-                    p.getResumenProductos() // Usamos el método que creamos antes
+                    p.getResumenProductos()
             };
             model.addRow(fila);
         }
@@ -101,7 +101,7 @@ public class VentanaAdmin extends JFrame {
         tabla.getColumnModel().getColumn(4).setPreferredWidth(100); // Total
         tabla.getColumnModel().getColumn(5).setPreferredWidth(300); // Detalles (más ancho)
 
-        // 4. Scroll de la tabla
+        // Scroll de la tabla
         JScrollPane scrollTabla = new JScrollPane(tabla);
         panelContent.add(scrollTabla);
 
@@ -124,8 +124,7 @@ public class VentanaAdmin extends JFrame {
         // Borde interno para que no quede pegado
         panelContent.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        // Scroll general (Opcional, si la tabla ya tiene scroll interno a veces no hace falta,
-        // pero lo dejamos por si agregas más cosas abajo)
+        // Scroll general
         panelVentanaAdmin.add(panelContent, BorderLayout.CENTER);
     }
 

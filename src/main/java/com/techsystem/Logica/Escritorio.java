@@ -2,7 +2,7 @@ package com.techsystem.Logica;
 
 public class Escritorio extends Computador {
 
-    private String factorForma; // "Torre", "Mini PC", "All-in-One"
+    private String factorForma; //Forma de la pc
     private boolean incluyeTecladoMouse;
 
     public Escritorio() { super(); }
@@ -28,11 +28,11 @@ public class Escritorio extends Computador {
 
     @Override
     public String mostrarDetallesEspecificos() {
-        return "🖥️ PC DE ESCRITORIO (" + factorForma + ")\n" +
-                "🚀 CPU: " + modeloProcesador + " | " + velocidadGHz + "GHz\n" +
-                "💾 RAM: " + memoriaRAMGB + "GB | Disco: " + capacidadAlmacenamientoGB + "GB " + tipoAlmacenamiento + "\n" +
-                "📦 Extras: " + (incluyeTecladoMouse ? "Incluye Teclado/Mouse" : "Solo Torre") + "\n" +
-                "⚡ Fuente: " + consumoEnergetico + "W\n" +
+        return " PC DE ESCRITORIO (" + factorForma + ")\n" +
+                " CPU: " + modeloProcesador + " | " + velocidadGHz + "GHz\n" +
+                " RAM: " + memoriaRAMGB + "GB | Disco: " + capacidadAlmacenamientoGB + "GB " + tipoAlmacenamiento + "\n" +
+                "Extras: " + (incluyeTecladoMouse ? "Incluye Teclado/Mouse" : "Solo Torre") + "\n" +
+                "Fuente: " + consumoEnergetico + "W\n" +
                 "------------------------------\n" + descripcion;
     }
 }

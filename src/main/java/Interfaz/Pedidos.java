@@ -14,8 +14,9 @@ public class Pedidos extends JFrame {
     private JPanel panelHeader;
     private JLabel txtTienda;
     private JButton seguirComprandoButton;
-    private JButton btnActualizar; // Antes se llamaba misPedidosButton en tu form
+    private JButton btnActualizar;
     private JPanel panelContent;
+    private JButton buttcerrarsesion;
 
     public Pedidos() {
         this.setContentPane(panelPedidos);
@@ -23,28 +24,37 @@ public class Pedidos extends JFrame {
         this.setLocationRelativeTo(null);
         this.setTitle("Mis Pedidos - TechSystem");
 
-        // 1. Configurar Layout y Scroll (Solo se hace una vez)
+        buttcerrarsesion.addActionListener(e -> volverLogin());
+
+        // Configurar Layout y Scroll
         configurarEstructuraVisual();
 
-        // 2. Estilos de botones
+        // Estilos de botones
         try {
             Estilos.botonesBonitos2(seguirComprandoButton);
+            Estilos.botonesBonitos2(buttcerrarsesion);
+
 
             // Reutilizamos este botón para la función "Refrescar"
-            // (Para ver si ya cambió a "Entregado")
             btnActualizar.setText("↻ Actualizar Estado");
             Estilos.botonesBonitos(btnActualizar);
         } catch (Exception e) {}
 
-        // 3. Cargar datos reales de la BD
+        // Cargar datos reales de la BD
         cargarListaPedidos();
 
-        // --- ACCIONES ---
+        // ACCIONES
         seguirComprandoButton.addActionListener(e -> abrirCatalogo());
 
         btnActualizar.addActionListener(e -> {
             cargarListaPedidos(); // Vuelve a consultar la BD
         });
+    }
+
+    private void volverLogin() {
+        InicioDeSesion login = new InicioDeSesion();
+        login.setVisible(true);
+        this.dispose();
     }
 
     private void configurarEstructuraVisual() {
@@ -54,7 +64,7 @@ public class Pedidos extends JFrame {
             panelPedidos.add(panelHeader, BorderLayout.NORTH);
         }
 
-        // Configuración del panel que tendrá la lista (BoxLayout Vertical)
+        // Configuración del panel que tendrá la lista
         panelContent.setLayout(new BoxLayout(panelContent, BoxLayout.Y_AXIS));
         panelContent.setBackground(Color.WHITE);
         panelContent.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
@@ -69,10 +79,10 @@ public class Pedidos extends JFrame {
     }
 
     private void cargarListaPedidos() {
-        // 1. Limpiar lo que había antes
+        // Limpiar lo que había antes
         panelContent.removeAll();
 
-        // 2. Obtener Usuario y Pedidos
+        // Obtener Usuario y Pedidos
         if (Sesion.usuarioLogueado instanceof Cliente) {
             Cliente cliente = (Cliente) Sesion.usuarioLogueado;
             GestorPedidos gestor = new GestorPedidos();
@@ -83,7 +93,7 @@ public class Pedidos extends JFrame {
             if (misPedidos.isEmpty()) {
                 mostrarMensajeVacio();
             } else {
-                // 3. Llenar la lista con tarjetas ItemPedido
+                // Llenar la lista con tarjetas ItemPedido
                 for (Pedido p : misPedidos) {
                     // Creamos la tarjeta pasándole el objeto Pedido
                     ItemPedido tarjeta = new ItemPedido(p);
@@ -98,7 +108,7 @@ public class Pedidos extends JFrame {
             }
         }
 
-        // 4. Refrescar visualmente
+        // Refrescar visualmente
         panelContent.revalidate();
         panelContent.repaint();
     }
@@ -114,10 +124,10 @@ public class Pedidos extends JFrame {
     }
 
     private void abrirCatalogo() {
-        // 1. Cerrar esta ventana de pedidos
+        // Cerrar esta ventana de pedidos
         this.dispose();
 
-        // 2. Abrir una NUEVA instancia del catálogo
+        // Abrir una NUEVA instancia del catálogo
         // Asegúrate de que VentanaCatalogo sea visible
         java.awt.EventQueue.invokeLater(() -> {
             new VentanaCatalogo().setVisible(true);
@@ -129,7 +139,4 @@ public class Pedidos extends JFrame {
         SwingUtilities.invokeLater(() -> new Pedidos().setVisible(true));
     }
 
-    // IMPORTANTE:
-    // En tu archivo .form, asegúrate de que el botón que antes era 'misPedidosButton'
-    // ahora tenga el nombre de variable 'btnActualizar' (o cambia el nombre en este código).
 }

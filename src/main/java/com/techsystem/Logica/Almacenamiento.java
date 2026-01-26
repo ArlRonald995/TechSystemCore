@@ -30,10 +30,10 @@ public class Almacenamiento extends Componente implements IProductoConAlmacenami
 
     @Override
     public String mostrarDetallesEspecificos() {
-        return "💾 DISCO " + tipoAlmacenamiento + "\n" +
-                "📦 Capacidad: " + capacidadTB + "TB (" + getCapacidadAlmacenamientoGB() + "GB)\n" +
-                "🚀 Lectura: " + velocidadLecturaMBs + " MB/s\n" +
-                "🔧 Interfaz: " + socketCompatibilidad + "\n" +
+        return "DISCO " + tipoAlmacenamiento + "\n" +
+                " Capacidad: " + capacidadTB + "TB (" + getCapacidadAlmacenamientoGB() + "GB)\n" +
+                " Lectura: " + velocidadLecturaMBs + " MB/s\n" +
+                " Interfaz: " + socketCompatibilidad + "\n" +
                 "----------------\n" + descripcion;
     }
 }

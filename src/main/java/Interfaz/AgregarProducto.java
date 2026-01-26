@@ -23,7 +23,7 @@ public class AgregarProducto extends JFrame {
     private JTextField txtDato1, txtDato2, txtDato3;
     private JLabel lblDato1, lblDato2, lblDato3;
 
-    // Mapa de relaciones Grupo -> Tipos
+    // Mapa de relaciones
     private Map<String, String[]> tiposPorGrupo;
 
     public AgregarProducto() {
@@ -43,7 +43,7 @@ public class AgregarProducto extends JFrame {
 
     private void inicializarGrupos() {
         tiposPorGrupo = new HashMap<>();
-        // Mapeo completo basado en tu GestorProductos
+        // Mapeo completo basado en el GestorProductos
         tiposPorGrupo.put("Computadores", new String[]{"Laptop", "Escritorio"});
         tiposPorGrupo.put("Móviles", new String[]{"Celular", "Tablet", "SmartWatch"});
         tiposPorGrupo.put("Componentes", new String[]{"Procesador", "MemoriaRam", "Almacenamiento"});
@@ -64,7 +64,7 @@ public class AgregarProducto extends JFrame {
         centro.setLayout(new BoxLayout(centro, BoxLayout.Y_AXIS));
         centro.setBackground(Color.WHITE);
 
-        // --- PANEL DATOS COMUNES ---
+        // PANEL DATOS COMUNES
         JPanel pComun = new JPanel(new GridLayout(0, 2, 10, 10));
         pComun.setBackground(Color.WHITE);
         pComun.setBorder(BorderFactory.createTitledBorder("Datos Generales"));
@@ -88,7 +88,7 @@ public class AgregarProducto extends JFrame {
         agregar(pComun, "Stock:", txtStock);
         agregar(pComun, "Descripción:", txtDescripcion);
 
-        // --- PANEL ESPECIFICACIONES ---
+        // PANEL ESPECIFICACIONES
         panelEspecifico = new JPanel(new GridLayout(3, 2, 10, 10));
         panelEspecifico.setBackground(new Color(240, 248, 255));
         panelEspecifico.setBorder(BorderFactory.createTitledBorder("Especificaciones Técnicas"));
@@ -112,7 +112,7 @@ public class AgregarProducto extends JFrame {
         btnGuardar.setForeground(Color.WHITE);            // Letra blanca
         btnGuardar.setFont(new Font("Segoe UI", Font.BOLD, 14));
 
-        // --- PROPIEDADES MÁGICAS PARA ARREGLAR EL COLOR ---
+        // PROPIEDADES PARA ARREGLAR EL COLOR
         btnGuardar.setOpaque(true);
         btnGuardar.setBorderPainted(false);
         btnGuardar.setFocusPainted(false);
@@ -221,13 +221,13 @@ public class AgregarProducto extends JFrame {
 
     private void guardarProducto() {
         try {
-            // 1. Validaciones
+            //  Validaciones
             if (txtSku.getText().isEmpty() || txtNombre.getText().isEmpty() || txtPrecio.getText().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "SKU, Nombre y Precio son obligatorios.");
                 return;
             }
 
-            // 2. Recolectar Datos Base
+            //  Recolectar Datos Base
             String sku = txtSku.getText();
             String nombre = txtNombre.getText();
             String marca = txtMarca.getText();
@@ -238,11 +238,11 @@ public class AgregarProducto extends JFrame {
             String grupo = (String) cmbGrupo.getSelectedItem();
             String tipo = (String) cmbTipoConcreto.getSelectedItem();
 
-            // Lógica de Imagen (Igual que en tu Gestor)
+            // Lógica de Imagen
             String nombreLimpio = nombre.trim().replace(" ", "_").replace("-", "_").replace("\"", "");
-            String img = nombreLimpio + ".png"; // Ojo: Se asume extensión .png
+            String img = nombreLimpio + ".png";
 
-            // 3. INSTANCIACIÓN (Usando tu lógica de constructores completos con defaults)
+            // INSTANCIACIÓN
             Producto p = null;
             String jsonSpecs = "{}"; // JSON Auxiliar
 
@@ -250,11 +250,11 @@ public class AgregarProducto extends JFrame {
             String d2 = txtDato2.getText();
             String d3 = txtDato3.getText();
 
-            // SWITCH MASIVO (Igual que en tu Gestor pero tomando datos del GUI)
+            // SWITCH MASIVO
             switch (tipo) {
-                // --- COMPUTADORES ---
+                // COMPUTADORES
                 case "Laptop":
-                    // d1=CPU, d2=RAM, d3=Disco
+
                     int ramLap = tryParseInt(d2, 8); // Default 8GB si falla
                     p = new Laptop(sku, nombre, desc, precio, stock, marca, img, grupo,
                             19.5, 65.0, 12, 512, d1, 3, true, true, false,
@@ -270,9 +270,8 @@ public class AgregarProducto extends JFrame {
                     jsonSpecs = String.format("{\"procesador\":\"%s\", \"ram\":\"%dGB\", \"disco\":\"%s\"}", d1, ramEsc, d3);
                     break;
 
-                // --- MÓVILES ---
+                // MÓVILES
                 case "Celular":
-                    // d1=OS, d2=Camara, d3=Pantalla
                     int camara = tryParseInt(d2, 50);
                     double pantallaCel = tryParseDouble(d3, 6.5);
                     p = new Celular(sku, nombre, desc, precio, stock, marca, img, grupo,
@@ -282,7 +281,7 @@ public class AgregarProducto extends JFrame {
                     break;
 
                 case "Tablet":
-                    // d1=OS, d2=Almacenamiento, d3=Pantalla
+
                     int almTab = tryParseInt(d2, 64);
                     double pantTab = tryParseDouble(d3, 10.0);
                     p = new Tablet(sku, nombre, desc, precio, stock, marca, img, grupo,
@@ -292,7 +291,7 @@ public class AgregarProducto extends JFrame {
                     break;
 
                 case "SmartWatch":
-                    // d1=BateriaH, d2=Correa, d3=Sensores
+
                     double batWatch = tryParseDouble(d1, 24.0);
                     p = new SmartWatch(sku, nombre, desc, precio, stock, marca, img, grupo,
                             5.0, 1.0, 12, 32, "SiP", 1, true, true, false,
@@ -300,9 +299,9 @@ public class AgregarProducto extends JFrame {
                     jsonSpecs = String.format("{\"bateria\":\"%.1fh\", \"correa\":\"%s\", \"sensores\":\"%s\"}", batWatch, d2, d3);
                     break;
 
-                // --- PERIFÉRICOS ---
+                // PERIFÉRICOS
                 case "Monitor":
-                    // d1=Tamaño, d2=Res, d3=Panel
+
                     double tamMon = tryParseDouble(d1, 24.0);
                     p = new Monitor(sku, nombre, desc, precio, stock, marca, img, grupo,
                             110.0, 35.0, 24, "HDMI", true,
@@ -311,7 +310,7 @@ public class AgregarProducto extends JFrame {
                     break;
 
                 case "Teclado":
-                    // d1=Tipo, d2=Idioma, d3=Retro
+
                     boolean retro = d3.equalsIgnoreCase("Si");
                     p = new Teclado(sku, nombre, desc, precio, stock, marca, img, grupo,
                             5.0, 0.5, 12, "USB", true, d1, retro); // Asumiendo constructor Teclado
@@ -319,7 +318,7 @@ public class AgregarProducto extends JFrame {
                     break;
 
                 case "Raton":
-                    // d1=DPI, d2=Botones, d3=Inalambrico
+
                     int dpi = tryParseInt(d1, 1000);
                     int btn = tryParseInt(d2, 3);
                     boolean wireless = d3.equalsIgnoreCase("Si");
@@ -329,9 +328,9 @@ public class AgregarProducto extends JFrame {
                     jsonSpecs = String.format("{\"dpi\":\"%d\", \"botones\":\"%d\", \"inalambrico\":\"%s\"}", dpi, btn, d3);
                     break;
 
-                // --- COMPONENTES ---
+                // COMPONENTES
                 case "MemoriaRam":
-                    // d1=Cap, d2=Tec, d3=Vel
+
                     int capRam = tryParseInt(d1, 8);
                     int velRam = tryParseInt(d3, 3200);
                     p = new MemoriaRam(sku, nombre, desc, precio, stock, marca, img, grupo,
@@ -340,15 +339,15 @@ public class AgregarProducto extends JFrame {
                     break;
 
                 case "Almacenamiento":
-                    // d1=Cap, d2=Tipo, d3=Interfaz
-                    int capDisk = tryParseInt(d1, 500); // Ojo si es TB convertir a GB mentalmente o cambiar
+
+                    int capDisk = tryParseInt(d1, 500);
                     p = new Almacenamiento(sku, nombre, desc, precio, stock, marca, img, grupo,
                             3.3, 5.0, 24, d3, d2, 1, 500); // Valores default vel lectura/escritura
                     jsonSpecs = String.format("{\"capacidad\":\"%s\", \"tipo\":\"%s\", \"interfaz\":\"%s\"}", d1, d2, d3);
                     break;
 
                 case "Procesador":
-                    // d1=Nucleos, d2=Freq, d3=Socket
+
                     int cores = tryParseInt(d1, 6);
                     double freq = tryParseDouble(d2, 3.5);
                     p = new Procesador(sku, nombre, desc, precio, stock, marca, img, grupo,
@@ -361,7 +360,7 @@ public class AgregarProducto extends JFrame {
                     return;
             }
 
-            // 4. GUARDAR EN BD
+            //  GUARDAR EN BASE DE DATOS
             if (p != null) {
                 GestorProductos gestor = new GestorProductos();
                 if (gestor.registrarProducto(p, jsonSpecs)) {

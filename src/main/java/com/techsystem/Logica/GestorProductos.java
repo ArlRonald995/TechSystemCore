@@ -10,7 +10,7 @@ import java.util.List;
 public class GestorProductos {
 
     // ==============================================================
-    // 1. MÉTODO PARA FILTRAR POR GRUPOS (CATEGORÍAS DE LA VENTANA)
+    // MÉTODO PARA FILTRAR POR GRUPOS (CATEGORÍAS DE LA VENTANA)
     // ==============================================================
     public List<Producto> obtenerProductosPorCategoria(String categoria) {
         if (categoria == null || categoria.equalsIgnoreCase("TODO")) {
@@ -62,7 +62,7 @@ public class GestorProductos {
     }
 
     // ==============================================================
-    // 2. MÉTODO PRINCIPAL (TRAE TODO)
+    // MÉTODO PRINCIPAL
     // ==============================================================
     public List<Producto> obtenerTodosLosProductos() {
         List<Producto> inventario = new ArrayList<>();
@@ -86,12 +86,11 @@ public class GestorProductos {
         return inventario;
     }
 
-    // ==============================================================
-    // 3. FÁBRICA DE OBJETOS
+    // FÁBRICA DE OBJETOS
     // ==============================================================
     private Producto crearProductoDesdeRS(ResultSet rs) throws SQLException {
 
-        // A) DATOS BASE
+        // DATOS BASE
         String tipo = rs.getString("tipo");
         if (tipo == null) return null;
 
@@ -102,31 +101,29 @@ public class GestorProductos {
         int stock = rs.getInt("stock");
         String marca = rs.getString("marca");
 
-        // B) ALGORITMO DE IMAGEN (Sin SQL)
-// B) ALGORITMO DE IMAGEN MEJORADO
+        //ALGORITMO DE IMAGEN (Sin SQL)
         String nombreBase = nombre.replace('\u00A0', ' ').trim();
 
-        // 2. Estandarización agresiva
+        //Estandarización agresiva
         String nombreLimpio = nombreBase
                 .replace(" ", "_")      // Espacios -> Guiones bajos
-                .replace("-", "_")      // Guiones medios -> Guiones bajos (Para Intel Core i3-13100 -> i3_13100)
+                .replace("-", "_")      // Guiones medios -> Guiones bajos
                 .replace("\"", "")      // Comillas de pulgadas
                 .replace("'", "")
                 .replace("/", "_")
                 .replace(":", "")
-                .replace("(", "")       // Quitamos paréntesis para evitar problemas de "(9na_Gen)" vs "(9na Gen)"
+                .replace("(", "")       // Quitamos paréntesis para evitar problemas
                 .replace(")", "");
 
-        // 3. Eliminar guiones bajos duplicados (ej: "Adata__Ddr4" -> "Adata_Ddr4")
+        // Eliminar guiones bajos duplicados
         while (nombreLimpio.contains("__")) {
             nombreLimpio = nombreLimpio.replace("__", "_");
         }
 
-        // 4. INTENTO DE BÚSQUEDA INTELIGENTE
-        // Primero buscamos el nombre super limpio (ej: iPad_10.2_9na_Gen_1)
+        // INTENTO DE BÚSQUEDA INTELIGENTE
         String img = buscarImagenEnRecursos(nombreLimpio);
 
-        // C) SWITCH DE INSTANCIACIÓN (Solo clases Concretas)
+        //SWITCH DE INSTANCIACIÓN
         switch (tipo.toLowerCase().trim()) {
             // COMPUTADORES
             case "portátil": case "laptop":
@@ -166,15 +163,13 @@ public class GestorProductos {
                 return new Raton(sku, nombre, desc, precio, stock, marca, img, tipo, 5.0, 1.0, 24, "USB", true, 16000, 6);
 
             default:
-                // CORRECCIÓN: Si el tipo no es reconocido o es una clase abstracta (Periferico, Componente),
-                // retornamos null para que el gestor simplemente ignore este producto.
+                //Se retorna null para que el gestor ignore este producto.
                 System.out.println("⚠️ Tipo de producto no soportado: " + tipo + " (SKU: " + sku + ")");
                 return null;
         }
     }
 
-    // ==============================================================
-    // 4. ALGORITMO DE BÚSQUEDA DE IMAGEN
+    // ALGORITMO DE BÚSQUEDA DE IMAGEN
     // ==============================================================
     private String buscarImagenEnRecursos(String nombreBase) {
         String[] extensiones = {".jpeg", ".jpg", ".png", ".JPG", ".PNG"};
@@ -185,7 +180,7 @@ public class GestorProductos {
                 return nombreArchivo; // ¡ENCONTRADO!
             }
         }
-        System.out.println("❌ NO ENCONTRADO: Busqué el archivo '" + nombreBase + "' (con varias extensiones) pero no existe.");
+        System.out.println("NO ENCONTRADO: Busqué el archivo '" + nombreBase + "' (con varias extensiones) pero no existe.");
         return "Logo1.png";
     }
     public double obtenerPromedioValoracion(String sku) {
@@ -197,8 +192,7 @@ public class GestorProductos {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                // getDouble devuelve 0.0 si es null, perfecto para nosotros
-                return rs.getDouble(1);
+                // getDouble devuelve 0.0 si es null
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -248,12 +242,10 @@ public class GestorProductos {
             ps.setDouble(4, p.getPrecio());
             ps.setInt(5, p.getStock());
 
-            // Usamos el nombre de la clase (Laptop, Celular...) para la columna 'tipo'
+            // Usamos el nombre de la clase para la columna 'tipo'
             ps.setString(6, p.getClass().getSimpleName());
 
             ps.setString(7, p.getMarca());
-
-            // ELIMINADO: ps.setString(8, p.getRutaImagen());
 
             // Ahora el JSON es el parámetro 8
             ps.setString(8, jsonEspecificaciones);
